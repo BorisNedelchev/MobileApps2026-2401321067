@@ -21,7 +21,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 /**
  * Form for a custom item. Used for inventory items (with quantity and an optional
- * "also save to the item database" checkbox) and for custom catalog entries.
+ * "also save to the item database" checkbox), storage compartments and custom catalog entries.
  */
 object ItemDialog {
 
@@ -29,7 +29,26 @@ object ItemDialog {
         @StringRes val title: Int,
         val showQuantity: Boolean = true,
         val showSaveToCatalog: Boolean = false,
-    )
+        /** Database items have a description only; player notes belong to inventory items. */
+        val showNotes: Boolean = true,
+        /** "Holds (lb)" and "contents weigh nothing" for storage compartments. */
+        val showContainerFields: Boolean = false,
+        @StringRes val capacityHint: Int = R.string.hint_capacity,
+    ) {
+        companion object {
+            fun forContainer(@StringRes title: Int) =
+                Options(title = title, showQuantity = false, showContainerFields = true)
+
+            /** Database entries: a capacity turns the entry into a storage compartment. */
+            fun forCatalog(@StringRes title: Int) = Options(
+                title = title,
+                showQuantity = false,
+                showNotes = false,
+                showContainerFields = true,
+                capacityHint = R.string.hint_capacity_catalog,
+            )
+        }
+    }
 
     fun show(
         activity: AppCompatActivity,
@@ -48,11 +67,17 @@ object ItemDialog {
 
         binding.editItemName.setText(base.name)
         binding.editQuantity.setText(base.quantity.coerceAtLeast(1).toString())
-        binding.editWeight.setText(if (base.weight == 0.0) "" else WeightFormat.format(base.weight).removeSuffix(" lb"))
+        binding.editWeight.setText(poundsInput(base.weight))
         binding.editCost.setText(if (base.costCp == 0L) "" else Currency.toGoldInput(base.costCp))
+        binding.editDescription.setText(base.description)
         binding.editNotes.setText(base.notes)
         binding.inputQuantity.isVisible = options.showQuantity
         binding.checkSaveToCatalog.isVisible = options.showSaveToCatalog
+        binding.inputNotes.isVisible = options.showNotes
+        binding.groupContainer.isVisible = options.showContainerFields
+        binding.inputCapacity.setHint(options.capacityHint)
+        binding.editCapacity.setText(poundsInput(base.capacity))
+        binding.checkWeightless.isChecked = base.weightlessContents
 
         val dialog = MaterialAlertDialogBuilder(activity)
             .setTitle(options.title)
@@ -70,7 +95,10 @@ object ItemDialog {
                     quantity = binding.editQuantity.text.toString(),
                     weight = binding.editWeight.text.toString(),
                     costGold = binding.editCost.text.toString(),
+                    description = binding.editDescription.text.toString(),
                     notes = binding.editNotes.text.toString(),
+                    capacity = if (options.showContainerFields) binding.editCapacity.text.toString() else "",
+                    weightlessContents = options.showContainerFields && binding.checkWeightless.isChecked,
                 )
                 when (val result = ItemValidator.validate(base, input)) {
                     is FormResult.Valid -> {
@@ -84,6 +112,10 @@ object ItemDialog {
         dialog.show()
     }
 
+    /** 3.0 -> "3", 0.25 -> "0.25", 0 -> "" (empty field). */
+    private fun poundsInput(pounds: Double): String =
+        if (pounds == 0.0) "" else WeightFormat.format(pounds).removeSuffix(" lb")
+
     private fun showErrors(binding: DialogItemBinding, errors: Set<ItemField>) {
         val context = binding.root.context
         fun message(field: ItemField, res: Int) = if (field in errors) context.getString(res) else null
@@ -91,5 +123,6 @@ object ItemDialog {
         binding.inputQuantity.error = message(ItemField.QUANTITY, R.string.error_quantity)
         binding.inputWeight.error = message(ItemField.WEIGHT, R.string.error_weight)
         binding.inputCost.error = message(ItemField.COST, R.string.error_cost)
+        binding.inputCapacity.error = message(ItemField.CAPACITY, R.string.error_weight)
     }
 }

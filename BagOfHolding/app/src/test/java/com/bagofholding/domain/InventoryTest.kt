@@ -3,6 +3,7 @@ package com.bagofholding.domain
 import com.bagofholding.data.model.InventoryItem
 import com.bagofholding.data.model.ItemCategory
 import com.bagofholding.data.model.PlayerCharacter
+import com.bagofholding.data.model.Purse
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -25,7 +26,8 @@ class InventoryCalculatorTest {
 
     @Test
     fun `stats sum weight and value per unit times quantity`() {
-        val stats = InventoryCalculator.stats(listOf(item(3.0, 2, 1500), item(0.5, 4, 10)), strength = 10)
+        val character = PlayerCharacter(name = "Ana", strength = 10)
+        val stats = InventoryCalculator.stats(listOf(item(3.0, 2, 1500), item(0.5, 4, 10)), character)
         assertEquals(8.0, stats.totalWeight, 0.001)
         assertEquals(3040L, stats.totalValueCp)
         assertEquals(6, stats.totalItems)
@@ -38,6 +40,17 @@ class InventoryCalculatorTest {
         assertEquals(Encumbrance.ENCUMBERED, InventoryCalculator.encumbrance(51.0, 10))
         assertEquals(Encumbrance.HEAVILY_ENCUMBERED, InventoryCalculator.encumbrance(101.0, 10))
         assertEquals(Encumbrance.OVER_CAPACITY, InventoryCalculator.encumbrance(151.0, 10))
+    }
+
+    @Test
+    fun `powerful build doubles capacity and every threshold`() {
+        assertEquals(300.0, InventoryCalculator.carryingCapacity(10, powerfulBuild = true), 0.001)
+        assertEquals(Encumbrance.UNENCUMBERED, InventoryCalculator.encumbrance(100.0, 10, powerfulBuild = true))
+        assertEquals(Encumbrance.ENCUMBERED, InventoryCalculator.encumbrance(101.0, 10, powerfulBuild = true))
+        assertEquals(Encumbrance.HEAVILY_ENCUMBERED, InventoryCalculator.encumbrance(300.0, 10, powerfulBuild = true))
+        assertEquals(Encumbrance.OVER_CAPACITY, InventoryCalculator.encumbrance(301.0, 10, powerfulBuild = true))
+        val goliath = PlayerCharacter(name = "Grog", strength = 20, powerfulBuild = true)
+        assertEquals(600.0, InventoryCalculator.stats(emptyList(), goliath).carryingCapacity, 0.001)
     }
 
     @Test
@@ -87,10 +100,11 @@ class InventoryTextFormatterTest {
 
     @Test
     fun `text contains character, items and totals`() {
-        val character = PlayerCharacter(name = "Thorin", characterClass = "Fighter", race = "Dwarf", level = 5)
+        val character = PlayerCharacter(name = "Thorin", strength = 10, purse = Purse(gp = 12, sp = 5))
         val items = listOf(InventoryItem(characterId = 1, name = "Longsword", weight = 3.0, quantity = 1))
         val text = InventoryTextFormatter.format(character, items)
-        assertTrue(text.startsWith("Thorin - Dwarf Fighter (level 5)"))
+        assertTrue(text.startsWith("Thorin (STR 10)"))
+        assertTrue(text.contains("Purse: 12 gp, 5 sp (worth 12 gp 5 sp)"))
         assertTrue(text.contains("- Longsword x1 (3 lb)"))
         assertTrue(text.contains("Total weight: 3 lb / 150 lb"))
     }

@@ -1,9 +1,11 @@
 package com.bagofholding.data
 
 import com.bagofholding.data.model.CatalogItem
+import com.bagofholding.data.model.Coin
 import com.bagofholding.data.model.InventoryItem
 import com.bagofholding.data.model.ItemCategory
 import com.bagofholding.data.model.PlayerCharacter
+import com.bagofholding.data.model.Purse
 import com.bagofholding.data.repository.CatalogRepository
 import com.bagofholding.data.repository.CharacterRepository
 import com.bagofholding.data.repository.DataChangeNotifier
@@ -30,7 +32,7 @@ class RepositoryTest {
     private val inventoryDao = FakeInventoryDao()
     private val characterDao = FakeCharacterDao(inventoryDao)
     private val catalogDao = FakeCatalogDao()
-    private val characters = CharacterRepository(characterDao, notifier, dispatcher)
+    private val characters = CharacterRepository(characterDao, inventoryDao, notifier, dispatcher)
     private val inventory = InventoryRepository(inventoryDao, notifier, dispatcher)
     private val catalog = CatalogRepository(catalogDao, notifier, dispatcher)
 
@@ -109,6 +111,88 @@ class RepositoryTest {
         val after = inventory.observeInventory(1).first()
         assertTrue(before.isEmpty())
         assertEquals(1, after.size)
+    }
+
+    @Test
+    fun `setCoins changes one coin type only`() = runTest(dispatcher) {
+        val id = characters.save(PlayerCharacter(name = "Ana", purse = Purse(gp = 5, cp = 7)))
+        characters.setCoins(id, Coin.EP, 4)
+        characters.setCoins(id, Coin.GP, -3) // never negative
+        assertEquals(Purse(gp = 0, ep = 4, cp = 7), characters.getCharacter(id)?.purse)
+    }
+
+    @Test
+    fun `catalog description is copied to the inventory item`() = runTest(dispatcher) {
+        val item = inventory.addFromCatalog(1, longsword.copy(description = "1d8 slashing"))
+        assertEquals("1d8 slashing", item.description)
+        assertEquals("1d8 slashing", inventory.observeItem(item.id).first()?.description)
+    }
+
+    @Test
+    fun `new items appear on top and new compartments at the bottom`() = runTest(dispatcher) {
+        inventory.save(InventoryItem(characterId = 1, name = "Rope"))
+        inventory.save(InventoryItem(characterId = 1, name = "Belt", isContainer = true, quantity = 5))
+        inventory.save(InventoryItem(characterId = 1, name = "Torch"))
+        val names = inventory.getInventory(1).map { it.name }
+        assertEquals(listOf("Torch", "Rope", "Belt"), names)
+        assertEquals(1, inventory.getInventory(1).last().quantity) // compartments are always 1
+    }
+
+    @Test
+    fun `drag and drop order is saved`() = runTest(dispatcher) {
+        val rope = inventory.save(InventoryItem(characterId = 1, name = "Rope"))
+        val belt = inventory.save(InventoryItem(characterId = 1, name = "Belt", isContainer = true))
+        val torch = inventory.save(InventoryItem(characterId = 1, name = "Torch"))
+        inventory.reorder(1, listOf(belt, torch, rope))
+        assertEquals(listOf("Belt", "Torch", "Rope"), inventory.getInventory(1).map { it.name })
+        val details = inventory.observeDetails(belt).first()
+        assertEquals(listOf("Torch", "Rope"), details?.contents?.map { it.name })
+    }
+
+    @Test
+    fun `collapsing and deleting a compartment`() = runTest(dispatcher) {
+        val rope = inventory.save(InventoryItem(characterId = 1, name = "Rope"))
+        val belt = inventory.save(InventoryItem(characterId = 1, name = "Belt", isContainer = true))
+        inventory.reorder(1, listOf(belt, rope)) // rope goes into the belt
+        inventory.setCollapsed(belt, true)
+        assertTrue(inventory.getInventory(1).first { it.id == belt }.collapsed)
+
+        inventory.delete(belt)
+        val left = inventory.getInventory(1)
+        assertEquals(listOf("Rope"), left.map { it.name })
+        assertTrue(left.single().sortOrder < 0) // moved out to the top
+    }
+
+    @Test
+    fun `catalog bags become compartments and are never stacked`() = runTest(dispatcher) {
+        val backpack = CatalogItem(id = 9, name = "Backpack", weight = 5.0, capacity = 30.0)
+        val first = inventory.addFromCatalog(1, backpack)
+        val second = inventory.addFromCatalog(1, backpack)
+        assertTrue(first.isContainer)
+        assertEquals(30.0, first.capacity, 0.0)
+        assertTrue(first.id != second.id)
+        assertEquals(1, second.quantity)
+        // a compartment has no +/- quantity
+        assertEquals(QuantityChange.Updated(first), inventory.changeQuantity(first.id, -1))
+    }
+
+    @Test
+    fun `character list weight ignores bag of holding contents`() = runTest(dispatcher) {
+        val id = characters.save(PlayerCharacter(name = "Ana"))
+        val bag = CatalogItem(
+            id = 3,
+            name = "Bag of Holding",
+            weight = 15.0,
+            capacity = 500.0,
+            weightlessContents = true,
+        )
+        inventory.addFromCatalog(id, bag)
+        val anvil = inventory.save(InventoryItem(characterId = id, name = "Anvil", weight = 100.0))
+        val bagId = inventory.getInventory(id).first { it.isContainer }.id
+        inventory.reorder(id, listOf(bagId, anvil)) // anvil into the bag
+        val stats = characters.observeCharacters().first().single()
+        assertEquals(15.0, stats.totalWeight, 0.001)
+        assertEquals(1, stats.itemCount)
     }
 
     @Test

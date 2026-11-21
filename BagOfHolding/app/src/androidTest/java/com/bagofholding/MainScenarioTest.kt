@@ -20,8 +20,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Main user scenario: create a character, open its inventory, add a custom item
- * and increase its quantity with the "+" button.
+ * Main user scenario: create a character, open its inventory, add a custom item,
+ * increase its quantity with the "+" button and open the item's description page.
  */
 @RunWith(AndroidJUnit4::class)
 @LargeTest
@@ -57,6 +57,13 @@ class MainScenarioTest {
         // Quick add: "+" increases the stack
         onView(withId(R.id.buttonPlus)).perform(click())
         waitUntil { onView(withId(R.id.textQuantity)).check(matches(withText("4"))) }
+
+        // Tapping the item shows its description page; the feather button opens the editor
+        onView(withText("Rope of Testing")).perform(click())
+        waitUntil { onView(withId(R.id.textDetailName)).check(matches(withText("Rope of Testing"))) }
+        onView(withId(R.id.textDetailQuantity)).check(matches(withText("4")))
+        onView(withId(R.id.fabEdit)).perform(click())
+        onView(withId(R.id.editItemName)).check(matches(withText("Rope of Testing")))
     }
 
     private fun waitUntilDisplayed(matcher: Matcher<View>) = waitUntil {

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Quill feather used as the "edit" icon. Shaft and barb notches are cut out of the vane (evenOdd fill). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:tint="?attr/colorControlNormal"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="@android:color/white"
+        android:fillType="evenOdd"
+        android:pathData="M21,3 C14,3 8.5,7 6.6,14.6 L5.6,17 L7,18.4 L9.4,17.4 C17,15.5 21,10 21,3 Z M7.8,16.9 L18.6,6.1 L17.9,5.4 L7.1,16.2 Z M10.37,13.18 L9.15,9.14 L8.67,9.31 L10.23,13.22 Z M13.47,9.99 L12.75,5.47 L12.26,5.57 L13.33,10.01 Z M12.08,13.37 L15.50,14.75 L15.67,14.28 L12.12,13.23 Z M15.29,10.27 L18.82,11.16 L18.92,10.67 L15.31,10.13 Z" />
+    <!-- Nib -->
+    <path
+        android:pathData="M6.4,17.6 L3,21"
+        android:strokeWidth="1.6"
+        android:strokeColor="@android:color/white"
+        android:strokeLineCap="round" />
+</vector>

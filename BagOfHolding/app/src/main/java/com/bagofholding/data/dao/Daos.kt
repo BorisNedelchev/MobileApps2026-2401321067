@@ -1,7 +1,6 @@
 package com.bagofholding.data.dao
 
 import com.bagofholding.data.model.CatalogItem
-import com.bagofholding.data.model.CharacterWithStats
 import com.bagofholding.data.model.InventoryItem
 import com.bagofholding.data.model.ItemCategory
 import com.bagofholding.data.model.PlayerCharacter
@@ -13,7 +12,8 @@ import com.bagofholding.data.model.PlayerCharacter
  */
 
 interface CharacterDao {
-    fun getAllWithStats(): List<CharacterWithStats>
+    /** Newest first. */
+    fun getAll(): List<PlayerCharacter>
     fun getById(id: Long): PlayerCharacter?
     fun insert(character: PlayerCharacter): Long
     fun update(character: PlayerCharacter): Int
@@ -21,6 +21,7 @@ interface CharacterDao {
 }
 
 interface InventoryDao {
+    /** Ordered by sortOrder (the order shown on screen). */
     fun getForCharacter(characterId: Long): List<InventoryItem>
     fun getById(id: Long): InventoryItem?
     fun findByCatalogId(characterId: Long, catalogId: Long): InventoryItem?

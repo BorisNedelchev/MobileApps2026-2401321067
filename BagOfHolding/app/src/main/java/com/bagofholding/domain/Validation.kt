@@ -10,64 +10,32 @@ sealed interface FormResult<out T, F> {
     data class Invalid<F>(val errors: Set<F>) : FormResult<Nothing, F>
 }
 
-/** Raw text typed into the character dialog. */
+/** Raw values from the character dialog. */
 data class CharacterInput(
     val name: String,
-    val characterClass: String,
-    val race: String,
-    val level: String,
     val strength: String,
-    val gold: String,
-    val silver: String,
-    val copper: String,
+    val powerfulBuild: Boolean,
 )
 
-enum class CharacterField { NAME, LEVEL, STRENGTH, GOLD, SILVER, COPPER }
+enum class CharacterField { NAME, STRENGTH }
 
 object CharacterValidator {
     const val MAX_NAME_LENGTH = 60
 
-    fun validate(id: Long, input: CharacterInput): FormResult<PlayerCharacter, CharacterField> {
+    /** Validates the form and applies it to [base] (a blank character or the one being edited). */
+    fun validate(base: PlayerCharacter, input: CharacterInput): FormResult<PlayerCharacter, CharacterField> {
         val errors = mutableSetOf<CharacterField>()
         val name = input.name.trim()
         if (name.isEmpty() || name.length > MAX_NAME_LENGTH) errors += CharacterField.NAME
 
-        val level = input.level.trim().ifEmpty { "1" }.toIntOrNull()
-        if (level == null || level !in PlayerCharacter.MIN_LEVEL..PlayerCharacter.MAX_LEVEL) {
-            errors += CharacterField.LEVEL
-        }
         val strength = input.strength.trim().ifEmpty { PlayerCharacter.DEFAULT_STRENGTH.toString() }.toIntOrNull()
         if (strength == null || strength !in PlayerCharacter.MIN_STRENGTH..PlayerCharacter.MAX_STRENGTH) {
             errors += CharacterField.STRENGTH
         }
-        val gp = parseCoins(input.gold, CharacterField.GOLD, errors)
-        val sp = parseCoins(input.silver, CharacterField.SILVER, errors)
-        val cp = parseCoins(input.copper, CharacterField.COPPER, errors)
 
-        if (errors.isNotEmpty() || level == null || strength == null) return FormResult.Invalid(errors)
-        return FormResult.Valid(
-            PlayerCharacter(
-                id = id,
-                name = name,
-                characterClass = input.characterClass.trim(),
-                race = input.race.trim(),
-                level = level,
-                strength = strength,
-                purseCp = Currency.toCopper(gp, sp, cp),
-            ),
-        )
+        if (errors.isNotEmpty() || strength == null) return FormResult.Invalid(errors)
+        return FormResult.Valid(base.copy(name = name, strength = strength, powerfulBuild = input.powerfulBuild))
     }
-
-    private fun parseCoins(text: String, field: CharacterField, errors: MutableSet<CharacterField>): Long {
-        val value = text.trim().ifEmpty { "0" }.toLongOrNull()
-        if (value == null || value < 0 || value > MAX_COINS) {
-            errors += field
-            return 0
-        }
-        return value
-    }
-
-    private const val MAX_COINS = 10_000_000L
 }
 
 /** Raw text typed into the item dialog. */
@@ -77,10 +45,14 @@ data class ItemInput(
     val quantity: String,
     val weight: String,
     val costGold: String,
+    val description: String,
     val notes: String,
+    /** Storage compartments only: pounds it holds ("" = no limit / not a compartment). */
+    val capacity: String = "",
+    val weightlessContents: Boolean = false,
 )
 
-enum class ItemField { NAME, QUANTITY, WEIGHT, COST }
+enum class ItemField { NAME, QUANTITY, WEIGHT, COST, CAPACITY }
 
 object ItemValidator {
     const val MAX_NAME_LENGTH = 80
@@ -100,8 +72,12 @@ object ItemValidator {
         val cost = Currency.parseGold(input.costGold)
         if (cost == null) errors += ItemField.COST
 
+        val capacity = parsePounds(input.capacity)
+        if (capacity == null) errors += ItemField.CAPACITY
+
         // A null value always comes with an entry in errors; the null checks only enable smart casts.
-        if (quantity == null || weight == null || cost == null) return FormResult.Invalid(errors)
+        if (quantity == null || weight == null) return FormResult.Invalid(errors)
+        if (cost == null || capacity == null) return FormResult.Invalid(errors)
         if (errors.isNotEmpty()) return FormResult.Invalid(errors)
         return FormResult.Valid(
             base.copy(
@@ -110,8 +86,16 @@ object ItemValidator {
                 quantity = quantity,
                 weight = weight,
                 costCp = cost,
+                description = input.description.trim(),
                 notes = input.notes.trim(),
+                capacity = capacity,
+                weightlessContents = input.weightlessContents,
             ),
         )
+    }
+
+    private fun parsePounds(text: String): Double? {
+        val value = text.trim().replace(',', '.').ifEmpty { "0" }.toDoubleOrNull()
+        return value?.takeIf { it >= 0 && it <= MAX_WEIGHT }
     }
 }

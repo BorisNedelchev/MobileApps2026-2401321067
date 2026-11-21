@@ -3,6 +3,8 @@ package com.bagofholding.network
 import com.bagofholding.data.model.InventoryItem
 import com.bagofholding.data.model.ItemCategory
 import com.bagofholding.data.model.PlayerCharacter
+import com.bagofholding.data.model.Purse
+import com.bagofholding.domain.PurseRules
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -19,18 +21,30 @@ import java.io.IOException
 
 class ShareCodecTest {
 
-    private val character = PlayerCharacter(name = "Lia", characterClass = "Rogue", level = 3, purseCp = 250)
+    private val character = PlayerCharacter(
+        name = "Lia",
+        strength = 14,
+        powerfulBuild = true,
+        purse = Purse(pp = 1, gp = 2, ep = 3, sp = 4, cp = 5),
+    )
     private val items = listOf(
-        InventoryItem(characterId = 1, name = "Dagger", category = ItemCategory.WEAPON, quantity = 2, weight = 1.0),
+        InventoryItem(
+            characterId = 1,
+            name = "Dagger",
+            category = ItemCategory.WEAPON,
+            quantity = 2,
+            weight = 1.0,
+            description = "1d4 piercing",
+        ),
     )
 
     @Test
     fun `encode then decode keeps all data`() {
         val json = ShareCodec.encode(ShareCodec.fromDomain(character, items))
         val payload = ShareCodec.decode(json)
-        assertEquals("Lia", payload.character.name)
-        assertEquals(250L, payload.character.purseCp)
+        assertEquals(character, payload.character.toDomain())
         val item = payload.items.single().toDomain(characterId = 42)
+        assertEquals("1d4 piercing", item.description)
         assertEquals(42L, item.characterId)
         assertEquals(ItemCategory.WEAPON, item.category)
         assertEquals(2, item.quantity)
@@ -50,17 +64,22 @@ class ShareCodecTest {
     }
 
     @Test(expected = ShareFormatException::class)
+    fun `payloads from a newer app version are rejected`() {
+        ShareCodec.decode("""{"app":"bag-of-holding","version":99,"character":{"name":"x"},"items":[]}""")
+    }
+
+    @Test(expected = ShareFormatException::class)
     fun `other apps are rejected`() {
         ShareCodec.decode("""{"app":"something-else","character":{"name":"x"},"items":[]}""")
     }
 
     @Test
     fun `received character values are clamped`() {
-        val character = SharedCharacter(name = "  ", level = 99, strength = -4, purseCp = -10).toDomain()
+        val character = SharedCharacter(name = "  ", strength = 99, gp = -10, pp = Long.MAX_VALUE).toDomain()
         assertEquals("Unnamed", character.name)
-        assertEquals(PlayerCharacter.MAX_LEVEL, character.level)
-        assertEquals(PlayerCharacter.MIN_STRENGTH, character.strength)
-        assertEquals(0L, character.purseCp)
+        assertEquals(PlayerCharacter.MAX_STRENGTH, character.strength)
+        assertEquals(0L, character.purse.gp)
+        assertEquals(PurseRules.MAX_COINS, character.purse.pp)
     }
 }
 

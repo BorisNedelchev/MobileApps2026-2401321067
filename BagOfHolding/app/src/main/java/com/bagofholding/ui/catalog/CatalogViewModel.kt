@@ -23,7 +23,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 sealed interface CatalogEvent {
-    data class AddedToInventory(val item: InventoryItem) : CatalogEvent
+    /** [returnToInventory] is true when the row itself was tapped, false for the "+" button. */
+    data class AddedToInventory(val item: InventoryItem, val returnToInventory: Boolean) : CatalogEvent
     data class Deleted(val item: CatalogItem) : CatalogEvent
 }
 
@@ -56,11 +57,15 @@ class CatalogViewModel(
         selectedCategory.value = category
     }
 
-    fun addToInventory(item: CatalogItem) {
+    /**
+     * Adds one unit to the character. The screen closes only after the write finished
+     * (closing first would cancel viewModelScope and could lose the item).
+     */
+    fun addToInventory(item: CatalogItem, returnToInventory: Boolean = false) {
         if (!canAddToInventory) return
         viewModelScope.launch {
             val added = inventoryRepository.addFromCatalog(characterId, item)
-            eventChannel.send(CatalogEvent.AddedToInventory(added))
+            eventChannel.send(CatalogEvent.AddedToInventory(added, returnToInventory))
         }
     }
 

@@ -31,4 +31,9 @@
     <color name="boh_surface_container">#271D1C</color>
     <color name="boh_surface_container_high">#322826</color>
     <color name="boh_surface_container_highest">#3D3231</color>
+
+    <!-- Name color of magic items -->
+    <color name="magic_blue">#8AB4F8</color>
+    <!-- Background of very valuable items (rows blend towards this) -->
+    <color name="value_gold">#6E5414</color>
 </resources>

@@ -24,6 +24,17 @@ object CatalogSeed {
     private fun item(name: String, category: ItemCategory, cost: Long, weight: Double, description: String) =
         CatalogItem(name = name, category = category, weight = weight, costCp = cost, description = description)
 
+    /** A bag that becomes a storage compartment in the inventory. */
+    private fun bag(
+        name: String,
+        category: ItemCategory,
+        cost: Long,
+        weight: Double,
+        capacity: Double,
+        description: String,
+        weightless: Boolean = false,
+    ) = item(name, category, cost, weight, description).copy(capacity = capacity, weightlessContents = weightless)
+
     val items: List<CatalogItem> = listOf(
         // Simple weapons
         item("Club", WEAPON, sp(1), 2.0, "1d4 bludgeoning. Light."),
@@ -78,7 +89,7 @@ object CatalogSeed {
         item("Arrows (20)", GEAR, gp(1), 1.0, "Ammunition for bows."),
         item("Crossbow bolts (20)", GEAR, gp(1), 1.5, "Ammunition for crossbows."),
         item("Sling bullets (20)", GEAR, cp(4), 1.5, "Ammunition for slings."),
-        item("Backpack", GEAR, gp(2), 5.0, "Holds 1 cubic foot / 30 lb of gear."),
+        bag("Backpack", GEAR, gp(2), 5.0, 30.0, "Holds 1 cubic foot / 30 lb of gear."),
         item("Bedroll", GEAR, gp(1), 7.0, "For sleeping outdoors."),
         item("Blanket", GEAR, sp(5), 3.0, "Keeps you warm at night."),
         item("Candle", GEAR, cp(1), 0.0, "Bright light 5 ft for 1 hour."),
@@ -103,8 +114,8 @@ object CatalogSeed {
         item("Healer's kit", GEAR, gp(5), 3.0, "10 uses. Stabilize a dying creature without a check."),
         item("Manacles", GEAR, gp(2), 6.0, "Bind a Small or Medium creature."),
         item("Steel mirror", GEAR, gp(5), 0.5, "Look around corners."),
-        item("Pouch", GEAR, sp(5), 1.0, "Holds 20 sling bullets or 50 blowgun needles."),
-        item("Sack", GEAR, cp(1), 0.5, "Holds 1 cubic foot / 30 lb of gear."),
+        bag("Pouch", GEAR, sp(5), 1.0, 6.0, "Holds 1/5 cubic foot / 6 lb, e.g. 20 sling bullets."),
+        bag("Sack", GEAR, cp(1), 0.5, 30.0, "Holds 1 cubic foot / 30 lb of gear."),
         item("Shovel", GEAR, gp(2), 5.0, "For digging."),
         item("Spyglass", GEAR, gp(1000), 1.0, "Objects appear twice as close."),
         item("Two-person tent", GEAR, gp(2), 20.0, "Simple portable shelter."),
@@ -132,7 +143,15 @@ object CatalogSeed {
         item("Dice set", TOOL, sp(1), 0.0, "Gaming set."),
         item("Playing card set", TOOL, sp(5), 0.0, "Gaming set."),
         // Magic items (SRD lists no prices, so cost is left at 0)
-        item("Bag of Holding", MAGIC, 0, 15.0, "Uncommon. Holds up to 500 lb in an extradimensional space."),
+        bag(
+            "Bag of Holding",
+            MAGIC,
+            0,
+            15.0,
+            500.0,
+            "Uncommon. Holds up to 500 lb in an extradimensional space; always weighs 15 lb.",
+            weightless = true,
+        ),
         item("Potion of greater healing", MAGIC, 0, 0.5, "Uncommon. Regain 4d4 + 4 hit points."),
         item("Cloak of protection", MAGIC, 0, 1.0, "Uncommon (attunement). +1 AC and saving throws."),
         item("Ring of protection", MAGIC, 0, 0.0, "Rare (attunement). +1 AC and saving throws."),

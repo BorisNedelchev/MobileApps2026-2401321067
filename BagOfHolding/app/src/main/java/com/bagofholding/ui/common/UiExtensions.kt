@@ -13,6 +13,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bagofholding.R
+import com.bagofholding.data.model.Coin
 import com.bagofholding.data.model.ItemCategory
 import com.bagofholding.data.model.PlayerCharacter
 import com.bagofholding.domain.Encumbrance
@@ -60,14 +61,29 @@ fun AlertDialog.dismissWith(owner: LifecycleOwner, onDismiss: (() -> Unit)? = nu
     return this
 }
 
-/** "Level 5 Dwarf Fighter" or just "Level 5". */
-fun PlayerCharacter.describe(context: Context): String {
-    val details = listOf(race, characterClass).filter { it.isNotBlank() }.joinToString(" ")
-    return if (details.isEmpty()) {
-        context.getString(R.string.character_level, level)
-    } else {
-        context.getString(R.string.character_subtitle, level, details)
-    }
+/** "Strength 16" or "Strength 16 · Powerful build". */
+fun PlayerCharacter.describe(context: Context): String = context.getString(
+    if (powerfulBuild) R.string.character_subtitle_powerful else R.string.character_subtitle,
+    strength,
+)
+
+@StringRes
+fun Coin.labelRes(): Int = when (this) {
+    Coin.PP -> R.string.coin_pp
+    Coin.GP -> R.string.coin_gp
+    Coin.EP -> R.string.coin_ep
+    Coin.SP -> R.string.coin_sp
+    Coin.CP -> R.string.coin_cp
+}
+
+/** Full coin name for dialogs: "Gold pieces (gp)". */
+@StringRes
+fun Coin.nameRes(): Int = when (this) {
+    Coin.PP -> R.string.coin_name_pp
+    Coin.GP -> R.string.coin_name_gp
+    Coin.EP -> R.string.coin_name_ep
+    Coin.SP -> R.string.coin_name_sp
+    Coin.CP -> R.string.coin_name_cp
 }
 
 @StringRes

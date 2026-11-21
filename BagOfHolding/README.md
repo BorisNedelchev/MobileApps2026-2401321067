@@ -21,30 +21,60 @@ At the table, players track equipment on paper sheets that get messy: crossed-ou
 added up in the margins, forgotten weights. When an item is handed to another player, both sheets
 need fixing. Bag of Holding replaces the paper inventory:
 
-* several characters per phone, each with an independent inventory and purse (gp / sp / cp);
+* several characters per phone, each with an independent inventory and a purse with all five
+  coin types (pp / gp / ep / sp / cp);
 * "+" and "−" buttons on every item for fast changes during combat;
+* items can be held and dragged into any order, and put into **storage compartments** (backpack,
+  belt, sack, Bag of Holding…) that can be folded shut to hide their contents;
+* magic items are written in blue, and the more an item stack is worth, the more golden its row;
 * 115 built-in items (weapons, armor, adventuring gear, tools, potions, magic items, treasure)
   based on the D&D 5e System Reference Document, plus the player's own custom items;
-* automatic total weight, carrying capacity and encumbrance (5e variant rule) and total value;
+* automatic total weight, carrying capacity and encumbrance (5e variant rule, including the
+  Powerful Build trait) and total value;
 * sending a whole inventory to another phone on the same Wi-Fi, or as text to any app.
 
 ## 2. How it works
 
 **Characters.** The start screen lists all characters with item count and total weight. The
-"New character" button opens a form (name, class, race, level, Strength, purse). The ⋮ menu on
-a card edits or deletes the character; deleting also removes its inventory (`ON DELETE CASCADE`).
+"New character" button opens a short form: name, Strength and a **Powerful Build** checkbox
+(goliaths, firbolgs… count as one size larger, so the carrying capacity is doubled). The ⋮ menu on a
+card edits or deletes the character; deleting also removes its inventory (`ON DELETE CASCADE`).
 
-**Inventory.** Tapping a character opens its inventory. The top card shows carried weight against
-the carrying capacity (Strength × 15 lb), an encumbrance label and progress bar that turns red when
-the character is encumbered, the total value of the items, and the purse.
+**Inventory.** Tapping a character opens its inventory. The top card shows:
 
-* **+ / −** change the quantity immediately. When the quantity reaches 0 the item is removed and a
-  snackbar offers **Undo**.
-* **Swipe** an item left or right to delete it (also with **Undo**).
-* **Tap** an item to edit name, category, quantity, weight, price and notes.
-* **Add item → From the item database** opens the database screen. Search by name, filter by
-  category with chips and tap an item to add it. Adding an item the character already has
-  increases the existing stack instead of creating a duplicate.
+1. carried weight against the carrying capacity (Strength × 15 lb, × 2 with Powerful Build), an
+   encumbrance label and a progress bar that turns red when the character is encumbered;
+2. right under it, the **purse**: five coin tiles (pp, gp, ep, sp, cp). Tapping a coin opens a
+   dialog to **Add**, **Remove** or **Set** that coin (e.g. "+150 gp" after a fight). Removing more
+   coins than you have is refused. Coins are kept separately – nothing is exchanged automatically;
+3. the total value of the items and the total worth of the purse.
+
+* **+ / −** (faint, borderless buttons) change the quantity immediately. When the quantity reaches 0
+  the item is removed and a snackbar offers **Undo**.
+* **Hold and drag** any row to move it. The order is saved.
+* **Storage compartments.** *Add item → Add a storage compartment* creates one (name, weight,
+  price, how many pounds it holds, "contents weigh nothing", description, notes). Adding a
+  Backpack, Sack, Pouch or Bag of Holding from the database creates one automatically. A
+  compartment is a header in the list: **every item below it, up to the next compartment, is
+  inside it** (shown indented). Drag an item under a backpack to pack it; drag it above the first
+  compartment to carry it loose. The header shows the item count and load (e.g. `12 / 30 lb`, red
+  when overfilled). The **chevron** on the header hides the contents behind the compartment;
+  a closed compartment is moved together with its contents. Deleting a compartment keeps its
+  items (they move to the top). Bag of Holding contents do not count toward carried weight.
+* **Colors.** Names of *Magic* items are blue (inventory, details and database). Item rows turn
+  gradually golden with the stack's value: plain up to 1 gp, fully golden from 500 gp
+  (logarithmic scale, `ValueTint`).
+* **Swipe** an item left or right to delete it. A confirmation dialog appears first; *Cancel* puts
+  the row back. After deleting, the snackbar still offers **Undo**.
+* **Tap** an item to open its **description page**: category, quantity, weight and value (each and
+  total), the description and the player's notes. For a compartment it shows how full it is and
+  what is inside. The **feather button** (bottom right) opens the
+  edit form; the toolbar has a delete button.
+* **Add item → From the item database** opens the database screen. Search by name and filter by
+  category with chips. **Tapping an item** adds it and returns to the inventory (a snackbar
+  confirms it). **The "+" button** adds it and stays in the database, so several items can be
+  added in a row. Adding an item the character already has increases the existing stack instead
+  of creating a duplicate. The item's description is copied into the inventory.
 * **Add item → Create a custom item** opens the item form. The checkbox
   "Also save to the item database" makes the item reusable for other characters.
 * In the database screen, custom items can be edited or deleted with a long press; the toolbar
@@ -82,6 +112,7 @@ flowchart TD
         A2[InventoryActivity] --> V2[InventoryViewModel]
         A3[CatalogActivity] --> V3[CatalogViewModel]
         A4[ShareActivity] --> V4[ShareViewModel]
+        A5[ItemDetailActivity] --> V5[ItemDetailViewModel]
     end
     subgraph Data["Data layer"]
         R1[CharacterRepository]
@@ -96,7 +127,7 @@ flowchart TD
         NSD[NsdServiceDiscovery]
     end
     V1 & V2 --> R1
-    V2 & V3 & V4 --> R2
+    V2 & V3 & V4 & V5 --> R2
     V2 & V3 --> R3
     R1 & R2 & R3 -->|DAO interfaces| D
     R1 & R2 & R3 --> N
@@ -110,10 +141,10 @@ flowchart TD
 | `data.dao` | DAO interfaces (`CharacterDao`, `InventoryDao`, `CatalogDao`) |
 | `data.db` | `DatabaseHelper` (`SQLiteOpenHelper`), SQL schema, SQLite DAO implementations, built-in item list |
 | `data.repository` | Repositories; expose `Flow`s and run all SQL on `Dispatchers.IO` |
-| `domain` | Pure Kotlin logic: currency, encumbrance, merging, form validation, text export |
+| `domain` | Pure Kotlin logic: currency, encumbrance, list layout (compartments, drag & drop), value tint, merging, form validation, text export |
 | `network` | JSON payload (kotlinx.serialization), HTTP server/client, NSD discovery |
 | `di` | `AppContainer` |
-| `ui.*` | Activities, ViewModels, RecyclerView adapters, dialogs |
+| `ui.*` | Activities, ViewModels, RecyclerView adapters, dialogs (character, item, coin) |
 
 Key decisions:
 
@@ -126,21 +157,33 @@ Key decisions:
   (`AlertDialog.dismissWith`), NSD uses the application context, and the server socket is closed
   in `onCleared()` – this prevents memory and window leaks.
 * **Thread safety.** Fast taps on + / − are serialized with a `Mutex` in `InventoryRepository`.
-* **Schema** (foreign keys enabled in `onConfigure`):
+* **Storage compartments without a tree.** Items and compartments live in one list ordered by
+  `sort_order`; membership is derived from the order (`InventoryLayout.sections`). Drag & drop
+  therefore only has to save a new order (`InventoryLayout.reorder`), and packing an item is the
+  same gesture as reordering. While a drag runs, the adapter owns the order and ignores database
+  updates; the new order is written once, on drop.
+* **Schema version 3** (foreign keys enabled in `onConfigure`):
 
   ```
-  characters(_id, name, character_class, race, level, strength, purse_cp, created_at)
-  catalog_items(_id, name, category, weight, cost_cp, description, is_custom)
-  inventory_items(_id, character_id → characters ON DELETE CASCADE, name, category,
-                  quantity, weight, cost_cp, notes, catalog_id → catalog_items ON DELETE SET NULL)
+  characters(_id, name, strength, powerful_build, pp, gp, ep, sp, cp, created_at)
+  catalog_items(_id, name, category, weight, cost_cp, description, is_custom,
+                capacity, weightless_contents)
+  inventory_items(_id, character_id → characters ON DELETE CASCADE, name, category, quantity,
+                  weight, cost_cp, description, notes, catalog_id → catalog_items ON DELETE SET NULL,
+                  sort_order, is_container, capacity, weightless_contents, collapsed)
   ```
+
+* **Migrations.** `DatabaseHelper.onUpgrade` upgrades step by step with `ALTER TABLE` instead of
+  deleting data. v1 → v2: the single `purse_cp` value is split into gp/sp/cp, inventory items
+  receive the description of their database item. v2 → v3: items get a `sort_order` matching the
+  old on-screen order, built-in bags get capacities, and owned bags become compartments.
 
 ### Course requirements → implementation
 
 | Requirement | Where |
 |---|---|
 | Kotlin, minSdk 24, latest targetSdk | `app/build.gradle.kts` |
-| 2+ screens with navigation (Intent) | 4 Activities: `MainActivity` → `InventoryActivity` → `CatalogActivity` / `ShareActivity` |
+| 2+ screens with navigation (Intent) | 5 Activities: `MainActivity` → `InventoryActivity` → `ItemDetailActivity` / `CatalogActivity` (returns a result) / `ShareActivity` |
 | Material 3, light + dark theme | `Theme.Material3.DayNight`, `values/colors.xml` + `values-night/colors.xml`, theme picker |
 | Local DB (SQLite) | `data/db/DatabaseHelper.kt`, `SqliteDaos.kt` |
 | Full CRUD via UI | Characters, inventory items and custom database items: create, read, update, delete |
@@ -148,7 +191,7 @@ Key decisions:
 | Extra feature – network communication (REST-style HTTP) | `network/LanShare.kt`, `ServiceDiscovery.kt`, `ui/share/` |
 | Extra feature – Share Intent | `InventoryActivity.shareAsText()` |
 | MVVM + Repository + DI | `ui/*/…ViewModel.kt`, `data/repository/`, `di/AppContainer.kt` |
-| Unit tests ≥ 15 % + Espresso test | `app/src/test/…` (50+ tests), `app/src/androidTest/…/MainScenarioTest.kt` |
+| Unit tests ≥ 15 % + Espresso test | `app/src/test/…` (80+ tests), `app/src/androidTest/…/MainScenarioTest.kt` |
 | ktlint + detekt | Gradle plugins, `.editorconfig`, `config/detekt/detekt.yml` |
 
 ## 4. User flow
@@ -158,9 +201,14 @@ flowchart LR
     M[Characters list] -->|New character| CD[Character form]
     M -->|tap card| I[Inventory]
     M -->|download icon| RX[Receive inventory]
-    I -->|+ / − / swipe / tap| I
+    I -->|+ / − / swipe + confirm / hold + drag| I
+    I -->|chevron| I
+    I -->|tap coin| CO[Coin dialog<br/>add / remove / set] --> I
+    I -->|tap item| D[Item description] -->|feather| IE[Item form] --> D
     I -->|Add item| CH{From database<br/>or custom?}
-    CH -->|database| DB[Item database<br/>search + filter] -->|tap item| I
+    CH -->|database| DB[Item database<br/>search + filter]
+    DB -->|tap item| I
+    DB -->|+ button| DB
     CH -->|custom| IF[Item form] --> I
     I -->|Share over Wi-Fi| SH[Share screen<br/>host + receive]
     I -->|Share as text| OS[Android share sheet]
@@ -168,10 +216,11 @@ flowchart LR
     IMP --> I
 ```
 
-Typical session: create "Thorin, Dwarf Fighter 3, STR 16" → open inventory → add Longsword,
-Chain mail, Rations ×5 from the database → during the game press − on Rations each day → after the
-fight press + on "Gemstone (50 gp)" → hand a potion to a friend: share the inventory and the friend
-merges it into their character.
+Typical session: create "Thorin, STR 16" → open inventory → in the database press + on Chain
+mail and Rations (staying there), then tap Longsword to add it and return → during the game press −
+on Rations each day → after the fight tap the gp coin and add 150 → tap the Longsword to read its
+damage → hand a potion to a friend: share the inventory and the friend merges it into their
+character.
 
 ## 5. Setup
 

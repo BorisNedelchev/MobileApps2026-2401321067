@@ -36,8 +36,7 @@
     <string name="theme_dark">Тъмна</string>
     <string name="fab_new_character">Нов герой</string>
     <string name="main_empty">Все още няма герои.\nНатиснете „Нов герой“, за да създадете първия си приключенец.</string>
-    <string name="character_level">Ниво %1$d</string>
-    <string name="character_subtitle">Ниво %1$d %2$s</string>
+    <string name="character_subtitle">Сила %1$d</string>
     <plurals name="character_stats">
         <item quantity="one">%1$d предмет · %2$s</item>
         <item quantity="other">%1$d предмета · %2$s</item>
@@ -48,24 +47,16 @@
     <string name="character_new">Нов герой</string>
     <string name="character_edit">Редактиране на герой</string>
     <string name="hint_name">Име</string>
-    <string name="hint_class">Клас</string>
-    <string name="hint_race">Раса</string>
-    <string name="hint_level">Ниво</string>
     <string name="hint_strength">Сила</string>
-    <string name="label_purse">Кесия</string>
-    <string name="hint_gold">gp</string>
-    <string name="hint_silver">sp</string>
-    <string name="hint_copper">cp</string>
     <string name="error_name">Въведете име (до 60 знака)</string>
-    <string name="error_level">1–20</string>
     <string name="error_strength">1–30</string>
-    <string name="error_coins">Невалидно</string>
+    <string name="error_coins">Въведете цяло число</string>
 
     <string name="menu_share_wifi">Сподели през Wi-Fi</string>
     <string name="menu_share_text">Сподели като текст</string>
     <string name="menu_edit_character">Редактирай героя</string>
     <string name="fab_add_item">Добави предмет</string>
-    <string name="inventory_empty">Торбата е празна.\nНатиснете „Добави предмет“.</string>
+    <string name="inventory_empty">Торбата е празна.\nНатиснете „Добави предмет“.\nЗадръжте и плъзнете предмет, за да го преместите.</string>
     <string name="inventory_weight">%1$s / %2$s</string>
     <string name="inventory_value">Стойност: %1$s</string>
     <string name="inventory_purse">Кесия: %1$s</string>
@@ -127,4 +118,57 @@
     <string name="share_error_connection">Няма връзка. Проверете дали двата телефона са в една Wi-Fi мрежа и дали споделянето е включено.</string>
     <string name="share_error_data">Другото устройство не изпрати валиден инвентар.</string>
     <string name="share_error_host">Споделянето не може да започне.</string>
+
+    <string name="character_subtitle_powerful">Сила %1$d · Мощно телосложение</string>
+    <string name="powerful_build">Мощно телосложение (Powerful build)</string>
+    <string name="powerful_build_hint">При носене се брои за един размер по-голям: капацитетът се удвоява.</string>
+    <string name="coin_pp">pp</string>
+    <string name="coin_gp">gp</string>
+    <string name="coin_ep">ep</string>
+    <string name="coin_sp">sp</string>
+    <string name="coin_cp">cp</string>
+    <string name="coin_name_pp">Платинени монети (pp)</string>
+    <string name="coin_name_gp">Златни монети (gp)</string>
+    <string name="coin_name_ep">Електрумови монети (ep)</string>
+    <string name="coin_name_sp">Сребърни монети (sp)</string>
+    <string name="coin_name_cp">Медни монети (cp)</string>
+    <string name="cd_coin">%1$d %2$s. Докоснете за промяна.</string>
+    <string name="coin_current">Имате %1$d %2$s.</string>
+    <string name="coin_op_add">Добави</string>
+    <string name="coin_op_remove">Извади</string>
+    <string name="coin_op_set">Задай</string>
+    <string name="hint_amount">Количество</string>
+    <string name="error_not_enough_coins">Имате само %1$d %2$s</string>
+    <string name="item_delete_title">Изтриване на предмета?</string>
+    <string name="item_delete_message">%1$s ще бъде премахнат от инвентара.</string>
+    <string name="hint_description">Описание</string>
+    <string name="detail_weight">Тегло</string>
+    <string name="detail_value">Стойност</string>
+    <string name="detail_each_total">%1$s за брой · %2$s общо</string>
+    <string name="detail_no_description">Все още няма описание. Натиснете перото, за да добавите.</string>
+    <string name="cd_edit_item">Редактирай предмета</string>
+
+    <string name="add_container">Добави отделение за съхранение</string>
+    <string name="container_new">Ново отделение</string>
+    <string name="container_edit">Редактиране на отделение</string>
+    <string name="container_label">Отделение за съхранение</string>
+    <string name="container_load">%1$s / %2$s</string>
+    <string name="container_no_limit">%1$s (без лимит)</string>
+    <string name="container_load_weightless">%1$s · съдържанието не тежи</string>
+    <string name="container_weightless">Съдържанието не тежи (напр. Bag of Holding)</string>
+    <string name="container_weightless_short">без тегло</string>
+    <string name="container_empty">Празно. Задръжте предмет и го плъзнете под отделението, за да го сложите вътре.</string>
+    <string name="container_delete_title">Изтриване на отделението?</string>
+    <string name="container_delete_message">%1$s ще бъде изтрито. Предметите вътре остават в инвентара и се преместват най-горе.</string>
+    <plurals name="container_items">
+        <item quantity="one">%d предмет</item>
+        <item quantity="other">%d предмета</item>
+    </plurals>
+    <string name="cd_show_contents">Покажи съдържанието на %1$s</string>
+    <string name="cd_hide_contents">Скрий съдържанието на %1$s</string>
+    <string name="hint_capacity">Побира (lb), празно = без лимит</string>
+    <string name="hint_capacity_catalog">Побира (lb), прави го отделение</string>
+    <string name="catalog_holds">побира %1$s</string>
+    <string name="detail_holds">Побира</string>
+    <string name="detail_contents">Съдържание</string>
 </resources>

@@ -2,47 +2,47 @@ package com.bagofholding.domain
 
 import com.bagofholding.data.model.InventoryItem
 import com.bagofholding.data.model.ItemCategory
+import com.bagofholding.data.model.PlayerCharacter
+import com.bagofholding.data.model.Purse
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class CharacterValidatorTest {
 
-    private fun input(
-        name: String = "Thorin",
-        level: String = "5",
-        strength: String = "16",
-        gold: String = "12",
-        silver: String = "",
-        copper: String = "",
-    ) = CharacterInput(name, " Fighter ", "Dwarf", level, strength, gold, silver, copper)
+    private val blank = PlayerCharacter(name = "")
 
     @Test
-    fun `valid input produces a trimmed character with purse in copper`() {
-        val result = CharacterValidator.validate(id = 3, input = input(name = "  Thorin "))
+    fun `valid input produces a trimmed character`() {
+        val input = CharacterInput(name = "  Grog ", strength = "18", powerfulBuild = true)
+        val result = CharacterValidator.validate(blank, input)
         assertTrue(result is FormResult.Valid)
         val character = (result as FormResult.Valid).value
-        assertEquals(3L, character.id)
-        assertEquals("Thorin", character.name)
-        assertEquals("Fighter", character.characterClass)
-        assertEquals(1200L, character.purseCp)
+        assertEquals("Grog", character.name)
+        assertEquals(18, character.strength)
+        assertTrue(character.powerfulBuild)
+    }
+
+    @Test
+    fun `editing keeps the id and the purse`() {
+        val existing = PlayerCharacter(id = 3, name = "Ana", purse = Purse(gp = 40))
+        val result = CharacterValidator.validate(existing, CharacterInput("Ana", "12", false)) as FormResult.Valid
+        assertEquals(3L, result.value.id)
+        assertEquals(Purse(gp = 40), result.value.purse)
     }
 
     @Test
     fun `invalid fields are all reported`() {
-        val result = CharacterValidator.validate(0, input(name = " ", level = "25", strength = "x", copper = "-1"))
-        assertTrue(result is FormResult.Invalid)
-        assertEquals(
-            setOf(CharacterField.NAME, CharacterField.LEVEL, CharacterField.STRENGTH, CharacterField.COPPER),
-            (result as FormResult.Invalid).errors,
-        )
+        val result = CharacterValidator.validate(blank, CharacterInput(" ", "31", false))
+        assertEquals(setOf(CharacterField.NAME, CharacterField.STRENGTH), (result as FormResult.Invalid).errors)
+        val letters = CharacterValidator.validate(blank, CharacterInput("Bo", "x", false)) as FormResult.Invalid
+        assertEquals(setOf(CharacterField.STRENGTH), letters.errors)
     }
 
     @Test
-    fun `empty level and strength fall back to defaults`() {
-        val result = CharacterValidator.validate(0, input(level = "", strength = "")) as FormResult.Valid
-        assertEquals(1, result.value.level)
-        assertEquals(10, result.value.strength)
+    fun `empty strength falls back to the default`() {
+        val result = CharacterValidator.validate(blank, CharacterInput("Bo", "", false)) as FormResult.Valid
+        assertEquals(PlayerCharacter.DEFAULT_STRENGTH, result.value.strength)
     }
 }
 
@@ -52,18 +52,19 @@ class ItemValidatorTest {
 
     @Test
     fun `valid item input is parsed`() {
-        val input = ItemInput("Rope", ItemCategory.GEAR, "2", "10,5", "1.5", " 50 ft ")
+        val input = ItemInput("Rope", ItemCategory.GEAR, "2", "10,5", "1.5", " Hempen. ", " 50 ft ")
         val result = ItemValidator.validate(base, input) as FormResult.Valid
         assertEquals("Rope", result.value.name)
         assertEquals(2, result.value.quantity)
         assertEquals(10.5, result.value.weight, 0.001)
         assertEquals(150L, result.value.costCp)
+        assertEquals("Hempen.", result.value.description)
         assertEquals("50 ft", result.value.notes)
     }
 
     @Test
     fun `invalid item input reports fields`() {
-        val input = ItemInput("", ItemCategory.GEAR, "0", "-3", "abc", "")
+        val input = ItemInput("", ItemCategory.GEAR, "0", "-3", "abc", "", "")
         val result = ItemValidator.validate(base, input) as FormResult.Invalid
         assertEquals(setOf(ItemField.NAME, ItemField.QUANTITY, ItemField.WEIGHT, ItemField.COST), result.errors)
     }

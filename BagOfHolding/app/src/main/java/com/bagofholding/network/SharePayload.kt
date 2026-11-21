@@ -3,6 +3,9 @@ package com.bagofholding.network
 import com.bagofholding.data.model.InventoryItem
 import com.bagofholding.data.model.ItemCategory
 import com.bagofholding.data.model.PlayerCharacter
+import com.bagofholding.data.model.Purse
+import com.bagofholding.domain.InventoryLayout
+import com.bagofholding.domain.PurseRules
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
@@ -16,18 +19,24 @@ data class SharePayload(
 ) {
     companion object {
         const val APP_ID = "bag-of-holding"
-        const val PROTOCOL_VERSION = 1
+        /**
+         * v2: purse with five coin types, Powerful Build, item descriptions.
+         * v3: storage compartments; items are sent in screen order.
+         */
+        const val PROTOCOL_VERSION = 3
     }
 }
 
 @Serializable
 data class SharedCharacter(
     val name: String,
-    val characterClass: String = "",
-    val race: String = "",
-    val level: Int = 1,
     val strength: Int = PlayerCharacter.DEFAULT_STRENGTH,
-    val purseCp: Long = 0,
+    val powerfulBuild: Boolean = false,
+    val pp: Long = 0,
+    val gp: Long = 0,
+    val ep: Long = 0,
+    val sp: Long = 0,
+    val cp: Long = 0,
 )
 
 @Serializable
@@ -37,7 +46,11 @@ data class SharedItem(
     val quantity: Int = 1,
     val weight: Double = 0.0,
     val costCp: Long = 0,
+    val description: String = "",
     val notes: String = "",
+    val isContainer: Boolean = false,
+    val capacity: Double = 0.0,
+    val weightlessContents: Boolean = false,
 )
 
 class ShareFormatException(message: String, cause: Throwable? = null) : Exception(message, cause)
@@ -68,20 +81,26 @@ object ShareCodec {
     fun fromDomain(character: PlayerCharacter, items: List<InventoryItem>) = SharePayload(
         character = SharedCharacter(
             name = character.name,
-            characterClass = character.characterClass,
-            race = character.race,
-            level = character.level,
             strength = character.strength,
-            purseCp = character.purseCp,
+            powerfulBuild = character.powerfulBuild,
+            pp = character.purse.pp,
+            gp = character.purse.gp,
+            ep = character.purse.ep,
+            sp = character.purse.sp,
+            cp = character.purse.cp,
         ),
-        items = items.map {
+        items = InventoryLayout.ordered(items).map {
             SharedItem(
                 name = it.name,
                 category = it.category.name,
                 quantity = it.quantity,
                 weight = it.weight,
                 costCp = it.costCp,
+                description = it.description,
                 notes = it.notes,
+                isContainer = it.isContainer,
+                capacity = it.capacity,
+                weightlessContents = it.weightlessContents,
             )
         },
     )
@@ -89,11 +108,15 @@ object ShareCodec {
 
 fun SharedCharacter.toDomain(): PlayerCharacter = PlayerCharacter(
     name = name.trim().ifBlank { "Unnamed" },
-    characterClass = characterClass,
-    race = race,
-    level = level.coerceIn(PlayerCharacter.MIN_LEVEL, PlayerCharacter.MAX_LEVEL),
     strength = strength.coerceIn(PlayerCharacter.MIN_STRENGTH, PlayerCharacter.MAX_STRENGTH),
-    purseCp = purseCp.coerceAtLeast(0),
+    powerfulBuild = powerfulBuild,
+    purse = Purse(
+        pp = pp.coerceIn(0, PurseRules.MAX_COINS),
+        gp = gp.coerceIn(0, PurseRules.MAX_COINS),
+        ep = ep.coerceIn(0, PurseRules.MAX_COINS),
+        sp = sp.coerceIn(0, PurseRules.MAX_COINS),
+        cp = cp.coerceIn(0, PurseRules.MAX_COINS),
+    ),
 )
 
 fun SharedItem.toDomain(characterId: Long): InventoryItem = InventoryItem(
@@ -103,5 +126,9 @@ fun SharedItem.toDomain(characterId: Long): InventoryItem = InventoryItem(
     quantity = quantity,
     weight = weight.coerceAtLeast(0.0),
     costCp = costCp.coerceAtLeast(0),
+    description = description,
     notes = notes,
+    isContainer = isContainer,
+    capacity = capacity.coerceAtLeast(0.0),
+    weightlessContents = isContainer && weightlessContents,
 )

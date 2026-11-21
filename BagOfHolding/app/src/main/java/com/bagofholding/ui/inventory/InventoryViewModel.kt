@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.bagofholding.data.model.Coin
 import com.bagofholding.data.model.InventoryItem
 import com.bagofholding.data.model.PlayerCharacter
 import com.bagofholding.data.model.toCatalogItem
@@ -13,6 +14,8 @@ import com.bagofholding.data.repository.InventoryRepository
 import com.bagofholding.data.repository.QuantityChange
 import com.bagofholding.di.AppContainer
 import com.bagofholding.domain.InventoryCalculator
+import com.bagofholding.domain.InventoryLayout
+import com.bagofholding.domain.InventoryRow
 import com.bagofholding.domain.InventoryStats
 import com.bagofholding.domain.InventoryTextFormatter
 import com.bagofholding.ui.characters.CharacterListViewModel.Companion.STOP_TIMEOUT_MS
@@ -29,6 +32,8 @@ data class InventoryUiState(
     val isLoading: Boolean = true,
     val character: PlayerCharacter? = null,
     val items: List<InventoryItem> = emptyList(),
+    /** What the list shows: items and storage compartments, collapsed contents hidden. */
+    val rows: List<InventoryRow> = emptyList(),
     val stats: InventoryStats? = null,
 )
 
@@ -52,7 +57,8 @@ class InventoryViewModel(
             isLoading = false,
             character = character,
             items = items,
-            stats = character?.let { InventoryCalculator.stats(items, it.strength) },
+            rows = InventoryLayout.rows(items),
+            stats = character?.let { InventoryCalculator.stats(items, it) },
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), InventoryUiState())
 
@@ -72,6 +78,16 @@ class InventoryViewModel(
         }
     }
 
+    /** Drag & drop finished; [visibleOrder] are the ids of the rows on screen, top to bottom. */
+    fun reorder(visibleOrder: List<Long>) {
+        viewModelScope.launch { inventoryRepository.reorder(characterId, visibleOrder) }
+    }
+
+    /** The eye/chevron icon on a storage compartment hides or shows its contents. */
+    fun toggleCollapsed(container: InventoryItem) {
+        viewModelScope.launch { inventoryRepository.setCollapsed(container.id, !container.collapsed) }
+    }
+
     fun restore(item: InventoryItem) {
         viewModelScope.launch { inventoryRepository.restore(item) }
     }
@@ -82,6 +98,11 @@ class InventoryViewModel(
             inventoryRepository.save(owned)
             if (alsoSaveToCatalog) catalogRepository.saveCustom(owned.toCatalogItem())
         }
+    }
+
+    /** Sets the number of coins of one type (the dialog already applied add / remove / set). */
+    fun setCoins(coin: Coin, amount: Long) {
+        viewModelScope.launch { characterRepository.setCoins(characterId, coin, amount) }
     }
 
     fun saveCharacter(character: PlayerCharacter) {

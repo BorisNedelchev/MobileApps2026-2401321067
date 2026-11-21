@@ -24,9 +24,12 @@ class AppContainer(context: Context) {
 
     private val databaseHelper by lazy { DatabaseHelper(appContext) }
     private val changeNotifier = DataChangeNotifier()
+    private val inventoryDao by lazy { SqliteInventoryDao(databaseHelper) }
 
-    val characterRepository by lazy { CharacterRepository(SqliteCharacterDao(databaseHelper), changeNotifier) }
-    val inventoryRepository by lazy { InventoryRepository(SqliteInventoryDao(databaseHelper), changeNotifier) }
+    val characterRepository by lazy {
+        CharacterRepository(SqliteCharacterDao(databaseHelper), inventoryDao, changeNotifier)
+    }
+    val inventoryRepository by lazy { InventoryRepository(inventoryDao, changeNotifier) }
     val catalogRepository by lazy { CatalogRepository(SqliteCatalogDao(databaseHelper), changeNotifier) }
 
     val shareClient by lazy { LanShareClient() }

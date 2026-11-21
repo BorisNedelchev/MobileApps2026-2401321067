@@ -4,7 +4,6 @@ import com.bagofholding.data.dao.CatalogDao
 import com.bagofholding.data.dao.CharacterDao
 import com.bagofholding.data.dao.InventoryDao
 import com.bagofholding.data.model.CatalogItem
-import com.bagofholding.data.model.CharacterWithStats
 import com.bagofholding.data.model.InventoryItem
 import com.bagofholding.data.model.ItemCategory
 import com.bagofholding.data.model.PlayerCharacter
@@ -26,8 +25,9 @@ class FakeInventoryDao : InventoryDao {
     val rows = linkedMapOf<Long, InventoryItem>()
     private var nextId = 1L
 
-    override fun getForCharacter(characterId: Long) =
-        rows.values.filter { it.characterId == characterId }.sortedBy { it.name }
+    override fun getForCharacter(characterId: Long) = rows.values
+        .filter { it.characterId == characterId }
+        .sortedWith(compareBy<InventoryItem>({ it.sortOrder }, { it.id }))
 
     override fun getById(id: Long) = rows[id]
 
@@ -58,10 +58,7 @@ class FakeCharacterDao(private val inventory: FakeInventoryDao) : CharacterDao {
     val rows = linkedMapOf<Long, PlayerCharacter>()
     private var nextId = 1L
 
-    override fun getAllWithStats() = rows.values.toList().asReversed().map { character ->
-        val items = inventory.getForCharacter(character.id)
-        CharacterWithStats(character, items.sumOf { it.quantity }, items.sumOf { it.weight * it.quantity })
-    }
+    override fun getAll(): List<PlayerCharacter> = rows.values.toList().asReversed()
 
     override fun getById(id: Long) = rows[id]
 

@@ -1,14 +1,17 @@
 package com.bagofholding.ui
 
 import com.bagofholding.data.model.CatalogItem
+import com.bagofholding.data.model.Coin
 import com.bagofholding.data.model.InventoryItem
 import com.bagofholding.data.model.ItemCategory
 import com.bagofholding.data.model.PlayerCharacter
+import com.bagofholding.data.model.Purse
 import com.bagofholding.data.repository.CatalogRepository
 import com.bagofholding.data.repository.CharacterRepository
 import com.bagofholding.data.repository.DataChangeNotifier
 import com.bagofholding.data.repository.InventoryRepository
 import com.bagofholding.domain.Encumbrance
+import com.bagofholding.domain.InventoryRow
 import com.bagofholding.network.DiscoveredHost
 import com.bagofholding.network.HostAddress
 import com.bagofholding.network.ShareCodec
@@ -24,6 +27,7 @@ import com.bagofholding.ui.catalog.CatalogViewModel
 import com.bagofholding.ui.characters.CharacterListViewModel
 import com.bagofholding.ui.inventory.InventoryEvent
 import com.bagofholding.ui.inventory.InventoryViewModel
+import com.bagofholding.ui.inventory.ItemDetailViewModel
 import com.bagofholding.ui.share.ShareError
 import com.bagofholding.ui.share.ShareEvent
 import com.bagofholding.ui.share.ShareViewModel
@@ -53,7 +57,7 @@ abstract class RepositoryBackedTest {
     protected val inventoryDao = FakeInventoryDao()
     protected val characterDao = FakeCharacterDao(inventoryDao)
     protected val catalogDao = FakeCatalogDao()
-    protected val characters = CharacterRepository(characterDao, notifier, dispatcher)
+    protected val characters = CharacterRepository(characterDao, inventoryDao, notifier, dispatcher)
     protected val inventory = InventoryRepository(inventoryDao, notifier, dispatcher)
     protected val catalog = CatalogRepository(catalogDao, notifier, dispatcher)
 }
@@ -96,6 +100,32 @@ class InventoryViewModelTest : RepositoryBackedTest() {
     }
 
     @Test
+    fun `rows follow compartments, collapse and drag and drop`() = runTest(dispatcher) {
+        val id = characters.save(PlayerCharacter(name = "Thorin"))
+        val viewModel = InventoryViewModel(id, characters, inventory, catalog)
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect {} }
+        val rope = inventory.save(InventoryItem(characterId = id, name = "Rope"))
+        val belt = inventory.save(InventoryItem(characterId = id, name = "Belt", isContainer = true))
+
+        viewModel.reorder(listOf(belt, rope))
+        val rows = viewModel.uiState.value.rows
+        assertTrue(rows[0] is InventoryRow.Container)
+        assertTrue((rows[1] as InventoryRow.Item).inContainer)
+
+        viewModel.toggleCollapsed((rows[0] as InventoryRow.Container).container)
+        assertEquals(listOf(belt), viewModel.uiState.value.rows.map { it.id })
+    }
+
+    @Test
+    fun `coins are set per type`() = runTest(dispatcher) {
+        val id = characters.save(PlayerCharacter(name = "Thorin", purse = Purse(gp = 10, sp = 3)))
+        val viewModel = InventoryViewModel(id, characters, inventory, catalog)
+        viewModel.setCoins(Coin.GP, 25)
+        viewModel.setCoins(Coin.PP, 1)
+        assertEquals(Purse(pp = 1, gp = 25, sp = 3), characters.getCharacter(id)?.purse)
+    }
+
+    @Test
     fun `decrementing the last item emits ItemRemoved for undo`() = runTest(dispatcher) {
         val id = characters.save(PlayerCharacter(name = "Thorin"))
         val viewModel = InventoryViewModel(id, characters, inventory, catalog)
@@ -109,6 +139,26 @@ class InventoryViewModelTest : RepositoryBackedTest() {
 
         viewModel.restore(event.item)
         assertEquals(1, inventory.getInventory(id).size)
+    }
+}
+
+@OptIn(ExperimentalCoroutinesApi::class)
+class ItemDetailViewModelTest : RepositoryBackedTest() {
+
+    @Test
+    fun `shows the item, saves edits and closes after delete`() = runTest(dispatcher) {
+        val itemId = inventory.save(InventoryItem(characterId = 1, name = "Rope", description = "50 feet"))
+        val viewModel = ItemDetailViewModel(itemId, inventory)
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect {} }
+
+        assertEquals("50 feet", viewModel.uiState.value.item?.description)
+
+        viewModel.save(viewModel.uiState.value.item!!.copy(name = "Silk rope"))
+        assertEquals("Silk rope", viewModel.uiState.value.item?.name)
+
+        viewModel.delete()
+        assertFalse(viewModel.uiState.value.isLoading)
+        assertNull(viewModel.uiState.value.item)
     }
 }
 
@@ -140,6 +190,17 @@ class CatalogViewModelTest : RepositoryBackedTest() {
         val second = viewModel.events.first() as CatalogEvent.AddedToInventory
         assertEquals(1, first.item.quantity)
         assertEquals(2, second.item.quantity)
+        assertFalse(first.returnToInventory)
+    }
+
+    @Test
+    fun `tapping the row asks the screen to return to the inventory`() = runTest(dispatcher) {
+        val id = catalogDao.insert(CatalogItem(name = "Rope"))
+        val viewModel = CatalogViewModel(3, catalog, inventory)
+        viewModel.addToInventory(catalogDao.rows.getValue(id), returnToInventory = true)
+        val event = viewModel.events.first() as CatalogEvent.AddedToInventory
+        assertTrue(event.returnToInventory)
+        assertEquals("Rope", inventory.getInventory(3).single().name)
     }
 
     @Test
@@ -156,7 +217,7 @@ class ShareViewModelTest : RepositoryBackedTest() {
 
     private val discovery = FakeServiceDiscovery()
     private val remotePayload = ShareCodec.fromDomain(
-        PlayerCharacter(name = "Mira", characterClass = "Bard"),
+        PlayerCharacter(name = "Mira", purse = Purse(gp = 30)),
         listOf(
             InventoryItem(characterId = 9, name = "Lute", category = ItemCategory.TOOL),
             InventoryItem(characterId = 9, name = "Torch", category = ItemCategory.CONSUMABLE, quantity = 3),
@@ -185,7 +246,9 @@ class ShareViewModelTest : RepositoryBackedTest() {
         viewModel.importAsNewCharacter()
         val event = viewModel.events.first() as ShareEvent.Imported
         assertNull(viewModel.uiState.value.received)
-        assertEquals("Mira", characters.getCharacter(event.characterId)?.name)
+        val imported = characters.getCharacter(event.characterId)
+        assertEquals("Mira", imported?.name)
+        assertEquals(30L, imported?.purse?.gp)
         assertEquals(setOf("Lute", "Torch"), inventory.getInventory(event.characterId).map { it.name }.toSet())
     }
 

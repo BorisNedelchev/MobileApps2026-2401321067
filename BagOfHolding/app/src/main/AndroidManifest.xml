@@ -28,6 +28,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".ui.inventory.ItemDetailActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".ui.catalog.CatalogActivity"
             android:exported="false" />
 

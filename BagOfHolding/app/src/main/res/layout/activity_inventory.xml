@@ -68,9 +68,54 @@
                     app:trackCornerRadius="4dp"
                     app:trackThickness="8dp" />
 
+                <!-- Purse: tap a coin to add / remove / set -->
+                <LinearLayout
+                    android:id="@+id/rowCoins"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal">
+
+                    <include
+                        android:id="@+id/coinPp"
+                        layout="@layout/view_coin"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp" />
+                    <include
+                        android:id="@+id/coinGp"
+                        layout="@layout/view_coin"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp" />
+                    <include
+                        android:id="@+id/coinEp"
+                        layout="@layout/view_coin"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp" />
+                    <include
+                        android:id="@+id/coinSp"
+                        layout="@layout/view_coin"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp" />
+                    <include
+                        android:id="@+id/coinCp"
+                        layout="@layout/view_coin"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:orientation="horizontal">
 
                     <TextView

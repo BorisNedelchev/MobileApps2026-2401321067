@@ -7,10 +7,10 @@ import com.bagofholding.data.dao.CharacterDao
 import com.bagofholding.data.dao.InventoryDao
 import com.bagofholding.data.db.DbContract.COL_ID
 import com.bagofholding.data.model.CatalogItem
-import com.bagofholding.data.model.CharacterWithStats
 import com.bagofholding.data.model.InventoryItem
 import com.bagofholding.data.model.ItemCategory
 import com.bagofholding.data.model.PlayerCharacter
+import com.bagofholding.data.model.Purse
 import com.bagofholding.data.db.DbContract.Catalog as Cat
 import com.bagofholding.data.db.DbContract.Characters as Ch
 import com.bagofholding.data.db.DbContract.Inventory as Inv
@@ -20,24 +20,9 @@ private fun idArgs(id: Long) = arrayOf(id.toString())
 
 class SqliteCharacterDao(private val helper: DatabaseHelper) : CharacterDao {
 
-    override fun getAllWithStats(): List<CharacterWithStats> {
-        val sql = """
-            SELECT c.*,
-                   COALESCE(SUM(i.${Inv.QUANTITY}), 0) AS item_count,
-                   COALESCE(SUM(i.${Inv.QUANTITY} * i.${Inv.WEIGHT}), 0) AS total_weight
-            FROM ${Ch.TABLE} c
-            LEFT JOIN ${Inv.TABLE} i ON i.${Inv.CHARACTER_ID} = c.$COL_ID
-            GROUP BY c.$COL_ID
-            ORDER BY c.${Ch.CREATED_AT} DESC, c.$COL_ID DESC
-        """
-        return helper.readableDatabase.rawQuery(sql, null).mapRows { cursor ->
-            CharacterWithStats(
-                character = cursor.toCharacter(),
-                itemCount = cursor.int("item_count"),
-                totalWeight = cursor.double("total_weight"),
-            )
-        }
-    }
+    override fun getAll(): List<PlayerCharacter> = helper.readableDatabase
+        .query(Ch.TABLE, null, null, null, null, null, "${Ch.CREATED_AT} DESC, $COL_ID DESC")
+        .mapRows { it.toCharacter() }
 
     override fun getById(id: Long): PlayerCharacter? = helper.readableDatabase
         .query(Ch.TABLE, null, ID_WHERE, idArgs(id), null, null, null)
@@ -56,21 +41,27 @@ class SqliteCharacterDao(private val helper: DatabaseHelper) : CharacterDao {
 
     private fun PlayerCharacter.toValues() = ContentValues().apply {
         put(Ch.NAME, name)
-        put(Ch.CLASS, characterClass)
-        put(Ch.RACE, race)
-        put(Ch.LEVEL, level)
         put(Ch.STRENGTH, strength)
-        put(Ch.PURSE_CP, purseCp)
+        put(Ch.POWERFUL_BUILD, if (powerfulBuild) 1 else 0)
+        put(Ch.PP, purse.pp)
+        put(Ch.GP, purse.gp)
+        put(Ch.EP, purse.ep)
+        put(Ch.SP, purse.sp)
+        put(Ch.CP, purse.cp)
     }
 
     private fun Cursor.toCharacter() = PlayerCharacter(
         id = long(COL_ID),
         name = string(Ch.NAME),
-        characterClass = string(Ch.CLASS),
-        race = string(Ch.RACE),
-        level = int(Ch.LEVEL),
         strength = int(Ch.STRENGTH),
-        purseCp = long(Ch.PURSE_CP),
+        powerfulBuild = int(Ch.POWERFUL_BUILD) == 1,
+        purse = Purse(
+            pp = long(Ch.PP),
+            gp = long(Ch.GP),
+            ep = long(Ch.EP),
+            sp = long(Ch.SP),
+            cp = long(Ch.CP),
+        ),
     )
 }
 
@@ -84,7 +75,7 @@ class SqliteInventoryDao(private val helper: DatabaseHelper) : InventoryDao {
             idArgs(characterId),
             null,
             null,
-            "${Inv.CATEGORY} ASC, ${Inv.NAME} COLLATE NOCASE ASC",
+            "${Inv.SORT_ORDER} ASC, $COL_ID ASC",
         )
         .mapRows { it.toItem() }
 
@@ -134,8 +125,14 @@ class SqliteInventoryDao(private val helper: DatabaseHelper) : InventoryDao {
         put(Inv.QUANTITY, quantity)
         put(Inv.WEIGHT, weight)
         put(Inv.COST_CP, costCp)
+        put(Inv.DESCRIPTION, description)
         put(Inv.NOTES, notes)
         if (catalogId != null) put(Inv.CATALOG_ID, catalogId) else putNull(Inv.CATALOG_ID)
+        put(Inv.SORT_ORDER, sortOrder)
+        put(Inv.IS_CONTAINER, if (isContainer) 1 else 0)
+        put(Inv.CAPACITY, capacity)
+        put(Inv.WEIGHTLESS_CONTENTS, if (weightlessContents) 1 else 0)
+        put(Inv.COLLAPSED, if (collapsed) 1 else 0)
     }
 
     private fun Cursor.toItem() = InventoryItem(
@@ -146,8 +143,14 @@ class SqliteInventoryDao(private val helper: DatabaseHelper) : InventoryDao {
         quantity = int(Inv.QUANTITY),
         weight = double(Inv.WEIGHT),
         costCp = long(Inv.COST_CP),
+        description = string(Inv.DESCRIPTION),
         notes = string(Inv.NOTES),
         catalogId = longOrNull(Inv.CATALOG_ID),
+        sortOrder = int(Inv.SORT_ORDER),
+        isContainer = int(Inv.IS_CONTAINER) == 1,
+        capacity = double(Inv.CAPACITY),
+        weightlessContents = int(Inv.WEIGHTLESS_CONTENTS) == 1,
+        collapsed = int(Inv.COLLAPSED) == 1,
     )
 }
 
@@ -201,6 +204,8 @@ class SqliteCatalogDao(private val helper: DatabaseHelper) : CatalogDao {
         put(Cat.COST_CP, costCp)
         put(Cat.DESCRIPTION, description)
         put(Cat.IS_CUSTOM, if (isCustom) 1 else 0)
+        put(Cat.CAPACITY, capacity)
+        put(Cat.WEIGHTLESS_CONTENTS, if (weightlessContents) 1 else 0)
     }
 
     private fun Cursor.toCatalogItem() = CatalogItem(
@@ -211,5 +216,7 @@ class SqliteCatalogDao(private val helper: DatabaseHelper) : CatalogDao {
         costCp = long(Cat.COST_CP),
         description = string(Cat.DESCRIPTION),
         isCustom = int(Cat.IS_CUSTOM) == 1,
+        capacity = double(Cat.CAPACITY),
+        weightlessContents = int(Cat.WEIGHTLESS_CONTENTS) == 1,
     )
 }

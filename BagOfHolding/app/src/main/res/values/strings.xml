@@ -39,8 +39,7 @@
     <string name="theme_dark">Dark</string>
     <string name="fab_new_character">New character</string>
     <string name="main_empty">No characters yet.\nTap “New character” to create your first adventurer.</string>
-    <string name="character_level">Level %1$d</string>
-    <string name="character_subtitle">Level %1$d %2$s</string>
+    <string name="character_subtitle">Strength %1$d</string>
     <plurals name="character_stats">
         <item quantity="one">%1$d item · %2$s</item>
         <item quantity="other">%1$d items · %2$s</item>
@@ -52,25 +51,17 @@
     <string name="character_new">New character</string>
     <string name="character_edit">Edit character</string>
     <string name="hint_name">Name</string>
-    <string name="hint_class">Class</string>
-    <string name="hint_race">Race</string>
-    <string name="hint_level">Level</string>
     <string name="hint_strength">Strength</string>
-    <string name="label_purse">Purse</string>
-    <string name="hint_gold">gp</string>
-    <string name="hint_silver">sp</string>
-    <string name="hint_copper">cp</string>
     <string name="error_name">Enter a name (up to 60 characters)</string>
-    <string name="error_level">1–20</string>
     <string name="error_strength">1–30</string>
-    <string name="error_coins">Invalid</string>
+    <string name="error_coins">Enter a whole number</string>
 
     <!-- Inventory -->
     <string name="menu_share_wifi">Share over Wi-Fi</string>
     <string name="menu_share_text">Share as text</string>
     <string name="menu_edit_character">Edit character</string>
     <string name="fab_add_item">Add item</string>
-    <string name="inventory_empty">The bag is empty.\nTap “Add item” to fill it.</string>
+    <string name="inventory_empty">The bag is empty.\nTap “Add item” to fill it.\nHold and drag items to reorder them.</string>
     <string name="inventory_weight">%1$s / %2$s</string>
     <string name="inventory_value">Value: %1$s</string>
     <string name="inventory_purse">Purse: %1$s</string>
@@ -135,4 +126,59 @@
     <string name="share_error_connection">Could not connect. Check that both phones are on the same Wi-Fi and that sharing is on.</string>
     <string name="share_error_data">The other device did not send a valid inventory.</string>
     <string name="share_error_host">Could not start sharing.</string>
+
+    <!-- v2: Powerful Build, purse with five coins, item details -->
+    <string name="character_subtitle_powerful">Strength %1$d · Powerful build</string>
+    <string name="powerful_build">Powerful build</string>
+    <string name="powerful_build_hint">Counts as one size larger when carrying: capacity is doubled.</string>
+    <string name="coin_pp">pp</string>
+    <string name="coin_gp">gp</string>
+    <string name="coin_ep">ep</string>
+    <string name="coin_sp">sp</string>
+    <string name="coin_cp">cp</string>
+    <string name="coin_name_pp">Platinum pieces (pp)</string>
+    <string name="coin_name_gp">Gold pieces (gp)</string>
+    <string name="coin_name_ep">Electrum pieces (ep)</string>
+    <string name="coin_name_sp">Silver pieces (sp)</string>
+    <string name="coin_name_cp">Copper pieces (cp)</string>
+    <string name="cd_coin">%1$d %2$s. Tap to change.</string>
+    <string name="coin_current">You have %1$d %2$s.</string>
+    <string name="coin_op_add">Add</string>
+    <string name="coin_op_remove">Remove</string>
+    <string name="coin_op_set">Set to</string>
+    <string name="hint_amount">Amount</string>
+    <string name="error_not_enough_coins">You only have %1$d %2$s</string>
+    <string name="item_delete_title">Delete item?</string>
+    <string name="item_delete_message">%1$s will be removed from the inventory.</string>
+    <string name="hint_description">Description</string>
+    <string name="detail_weight">Weight</string>
+    <string name="detail_value">Value</string>
+    <string name="detail_each_total">%1$s each · %2$s total</string>
+    <string name="detail_no_description">No description yet. Tap the feather to add one.</string>
+    <string name="cd_edit_item">Edit item</string>
+
+    <!-- v3: storage compartments, drag & drop -->
+    <string name="add_container">Add a storage compartment</string>
+    <string name="container_new">New storage compartment</string>
+    <string name="container_edit">Edit storage compartment</string>
+    <string name="container_label">Storage compartment</string>
+    <string name="container_load">%1$s / %2$s</string>
+    <string name="container_no_limit">%1$s (no limit)</string>
+    <string name="container_load_weightless">%1$s · contents weigh nothing</string>
+    <string name="container_weightless">Contents weigh nothing (e.g. Bag of Holding)</string>
+    <string name="container_weightless_short">weightless</string>
+    <string name="container_empty">Empty. Hold an item and drag it under this compartment to put it inside.</string>
+    <string name="container_delete_title">Delete storage compartment?</string>
+    <string name="container_delete_message">%1$s will be deleted. The items inside stay in the inventory and move to the top.</string>
+    <plurals name="container_items">
+        <item quantity="one">%d item</item>
+        <item quantity="other">%d items</item>
+    </plurals>
+    <string name="cd_show_contents">Show what is in %1$s</string>
+    <string name="cd_hide_contents">Hide what is in %1$s</string>
+    <string name="hint_capacity">Holds (lb), empty = no limit</string>
+    <string name="hint_capacity_catalog">Holds (lb), makes it a storage compartment</string>
+    <string name="catalog_holds">holds %1$s</string>
+    <string name="detail_holds">Holds</string>
+    <string name="detail_contents">Contents</string>
 </resources>

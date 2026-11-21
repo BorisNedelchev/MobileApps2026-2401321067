@@ -32,6 +32,7 @@ class CatalogActivity : AppCompatActivity() {
     private val characterId: Long by lazy { intent.getLongExtra(EXTRA_CHARACTER_ID, 0L) }
     private val viewModel: CatalogViewModel by viewModels { CatalogViewModel.factory(appContainer, characterId) }
     private lateinit var adapter: CatalogAdapter
+    private var closing = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -52,7 +53,8 @@ class CatalogActivity : AppCompatActivity() {
 
         adapter = CatalogAdapter(
             canAdd = viewModel.canAddToInventory,
-            onAdd = { viewModel.addToInventory(it) },
+            onAdd = { viewModel.addToInventory(it, returnToInventory = false) },
+            onPick = { pickItem(it) },
             onLongClick = { onItemLongClick(it) },
         )
         binding.recyclerCatalog.adapter = adapter
@@ -86,7 +88,21 @@ class CatalogActivity : AppCompatActivity() {
         }
     }
 
+    private fun pickItem(item: CatalogItem) {
+        if (closing) return // ignore double taps while the item is being saved
+        closing = true
+        viewModel.addToInventory(item, returnToInventory = true)
+    }
+
     private fun handle(event: CatalogEvent) {
+        if (event is CatalogEvent.AddedToInventory && event.returnToInventory) {
+            val result = Intent()
+                .putExtra(RESULT_ITEM_NAME, event.item.name)
+                .putExtra(RESULT_QUANTITY, event.item.quantity)
+            setResult(RESULT_OK, result)
+            finish()
+            return
+        }
         val message = when (event) {
             is CatalogEvent.AddedToInventory ->
                 getString(R.string.catalog_added, event.item.name, event.item.quantity)
@@ -112,7 +128,8 @@ class CatalogActivity : AppCompatActivity() {
 
     private fun showNewCustomItemDialog() {
         val blank = InventoryItem(characterId = 0, name = "", category = ItemCategory.GEAR)
-        ItemDialog.show(this, blank, ItemDialog.Options(R.string.catalog_new_item, showQuantity = false)) { item, _ ->
+        val options = ItemDialog.Options.forCatalog(R.string.catalog_new_item)
+        ItemDialog.show(this, blank, options) { item, _ ->
             viewModel.saveCustom(item.toCatalogItem())
         }
     }
@@ -124,15 +141,21 @@ class CatalogActivity : AppCompatActivity() {
             category = catalogItem.category,
             weight = catalogItem.weight,
             costCp = catalogItem.costCp,
-            notes = catalogItem.description,
+            description = catalogItem.description,
+            isContainer = catalogItem.isContainer,
+            capacity = catalogItem.capacity,
+            weightlessContents = catalogItem.weightlessContents,
         )
-        ItemDialog.show(this, asItem, ItemDialog.Options(R.string.catalog_edit_item, showQuantity = false)) { item, _ ->
+        val options = ItemDialog.Options.forCatalog(R.string.catalog_edit_item)
+        ItemDialog.show(this, asItem, options) { item, _ ->
             viewModel.saveCustom(item.toCatalogItem().copy(id = catalogItem.id))
         }
     }
 
     companion object {
         private const val EXTRA_CHARACTER_ID = "character_id"
+        const val RESULT_ITEM_NAME = "added_item_name"
+        const val RESULT_QUANTITY = "added_item_quantity"
 
         fun intent(context: Context, characterId: Long): Intent =
             Intent(context, CatalogActivity::class.java).putExtra(EXTRA_CHARACTER_ID, characterId)

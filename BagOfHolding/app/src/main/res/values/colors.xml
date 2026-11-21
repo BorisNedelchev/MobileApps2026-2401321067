@@ -32,6 +32,18 @@
     <color name="boh_surface_container_high">#F6E4E1</color>
     <color name="boh_surface_container_highest">#F1DEDC</color>
 
+    <!-- Coin dots in the purse row (same in light and dark mode) -->
+    <color name="coin_pp">#B8C4CE</color>
+    <color name="coin_gp">#E3B23C</color>
+    <color name="coin_ep">#C9C08A</color>
+    <color name="coin_sp">#C7CBD1</color>
+    <color name="coin_cp">#B87333</color>
+
     <color name="launcher_background">#8C1D18</color>
     <color name="launcher_foreground">#F0C048</color>
+
+    <!-- Name color of magic items -->
+    <color name="magic_blue">#1A5FB4</color>
+    <!-- Background of very valuable items (rows blend towards this) -->
+    <color name="value_gold">#F4D27A</color>
 </resources>

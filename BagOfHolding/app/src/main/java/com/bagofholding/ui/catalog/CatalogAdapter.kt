@@ -12,10 +12,14 @@ import com.bagofholding.databinding.ItemCatalogBinding
 import com.bagofholding.domain.Currency
 import com.bagofholding.domain.WeightFormat
 import com.bagofholding.ui.common.labelRes
+import com.bagofholding.ui.inventory.applyMagicColor
 
 class CatalogAdapter(
     private val canAdd: Boolean,
+    /** "+" button: add and stay in the database. */
     private val onAdd: (CatalogItem) -> Unit,
+    /** Row tap: add and go back to the inventory. */
+    private val onPick: (CatalogItem) -> Unit,
     private val onLongClick: (CatalogItem) -> Unit,
 ) : ListAdapter<CatalogItem, CatalogAdapter.ViewHolder>(Diff) {
 
@@ -25,15 +29,18 @@ class CatalogAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(getItem(position))
 
     inner class ViewHolder(private val binding: ItemCatalogBinding) : RecyclerView.ViewHolder(binding.root) {
+        private val defaultNameColors = binding.textCatalogName.textColors
 
         fun bind(item: CatalogItem) {
             val context = binding.root.context
             binding.textCatalogName.text = item.name
+            binding.textCatalogName.applyMagicColor(item.category, defaultNameColors)
             binding.textCustomBadge.isVisible = item.isCustom
             val details = buildList {
                 add(context.getString(item.category.labelRes()))
                 add(WeightFormat.format(item.weight))
                 add(if (item.costCp > 0) Currency.format(item.costCp) else context.getString(R.string.catalog_no_price))
+                if (item.isContainer) add(context.getString(R.string.catalog_holds, WeightFormat.format(item.capacity)))
             }
             binding.textCatalogDetails.text = details.joinToString(" · ")
             binding.textCatalogDescription.text = item.description
@@ -42,7 +49,7 @@ class CatalogAdapter(
             binding.buttonAdd.isVisible = canAdd
             binding.buttonAdd.contentDescription = context.getString(R.string.cd_add_one, item.name)
             binding.buttonAdd.setOnClickListener { onAdd(item) }
-            binding.root.setOnClickListener { if (canAdd) onAdd(item) }
+            binding.root.setOnClickListener { if (canAdd) onPick(item) }
             binding.root.setOnLongClickListener {
                 onLongClick(item)
                 true
