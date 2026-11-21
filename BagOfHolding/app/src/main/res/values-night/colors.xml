@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dark palette (used automatically in dark mode). -->
+<resources>
+    <color name="boh_primary">#FFB4AA</color>
+    <color name="boh_on_primary">#690003</color>
+    <color name="boh_primary_container">#8C1D18</color>
+    <color name="boh_on_primary_container">#FFDAD5</color>
+
+    <color name="boh_secondary">#E9C16C</color>
+    <color name="boh_on_secondary">#3F2E00</color>
+    <color name="boh_secondary_container">#5A4300</color>
+    <color name="boh_on_secondary_container">#FFDF9B</color>
+
+    <color name="boh_tertiary">#B3CFA6</color>
+    <color name="boh_on_tertiary">#1F3619</color>
+    <color name="boh_tertiary_container">#354D2E</color>
+    <color name="boh_on_tertiary_container">#CEEBC1</color>
+
+    <color name="boh_error">#FFB4AB</color>
+    <color name="boh_on_error">#690005</color>
+
+    <color name="boh_surface">#1A1110</color>
+    <color name="boh_on_surface">#F1DEDC</color>
+    <color name="boh_surface_variant">#534341</color>
+    <color name="boh_on_surface_variant">#D8C2BF</color>
+    <color name="boh_outline">#A08C8A</color>
+    <color name="boh_outline_variant">#534341</color>
+
+    <color name="boh_surface_container_lowest">#140C0B</color>
+    <color name="boh_surface_container_low">#231918</color>
+    <color name="boh_surface_container">#271D1C</color>
+    <color name="boh_surface_container_high">#322826</color>
+    <color name="boh_surface_container_highest">#3D3231</color>
+</resources>

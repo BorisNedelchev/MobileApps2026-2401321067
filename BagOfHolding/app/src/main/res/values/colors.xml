@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Light palette: dragon red + old gold on warm parchment. values-night/colors.xml holds the dark palette. -->
+<resources>
+    <color name="boh_primary">#8C1D18</color>
+    <color name="boh_on_primary">#FFFFFF</color>
+    <color name="boh_primary_container">#FFDAD5</color>
+    <color name="boh_on_primary_container">#410001</color>
+
+    <color name="boh_secondary">#765A0B</color>
+    <color name="boh_on_secondary">#FFFFFF</color>
+    <color name="boh_secondary_container">#FFDF9B</color>
+    <color name="boh_on_secondary_container">#251A00</color>
+
+    <color name="boh_tertiary">#4C6544</color>
+    <color name="boh_on_tertiary">#FFFFFF</color>
+    <color name="boh_tertiary_container">#CEEBC1</color>
+    <color name="boh_on_tertiary_container">#0A2006</color>
+
+    <color name="boh_error">#BA1A1A</color>
+    <color name="boh_on_error">#FFFFFF</color>
+
+    <color name="boh_surface">#FFF8F5</color>
+    <color name="boh_on_surface">#231918</color>
+    <color name="boh_surface_variant">#F5DDDA</color>
+    <color name="boh_on_surface_variant">#534341</color>
+    <color name="boh_outline">#857371</color>
+    <color name="boh_outline_variant">#D8C2BF</color>
+
+    <color name="boh_surface_container_lowest">#FFFFFF</color>
+    <color name="boh_surface_container_low">#FFF0EE</color>
+    <color name="boh_surface_container">#FCEAE7</color>
+    <color name="boh_surface_container_high">#F6E4E1</color>
+    <color name="boh_surface_container_highest">#F1DEDC</color>
+
+    <color name="launcher_background">#8C1D18</color>
+    <color name="launcher_foreground">#F0C048</color>
+</resources>

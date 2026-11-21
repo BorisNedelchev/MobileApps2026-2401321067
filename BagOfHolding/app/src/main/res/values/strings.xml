@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Bag of Holding</string>
+
+    <!-- Common actions -->
+    <string name="action_save">Save</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_undo">Undo</string>
+    <string name="action_open">Open</string>
+    <string name="cd_back">Back</string>
+    <string name="cd_more">More options</string>
+    <string name="cd_add_one">Add one %1$s</string>
+    <string name="cd_remove_one">Remove one %1$s</string>
+
+    <!-- Item categories -->
+    <string name="category_all">All</string>
+    <string name="category_weapon">Weapon</string>
+    <string name="category_armor">Armor</string>
+    <string name="category_gear">Gear</string>
+    <string name="category_tool">Tool</string>
+    <string name="category_consumable">Consumable</string>
+    <string name="category_magic">Magic</string>
+    <string name="category_treasure">Treasure</string>
+    <string name="category_other">Other</string>
+
+    <!-- Encumbrance (D&D 5e variant rule) -->
+    <string name="encumbrance_none">Unencumbered</string>
+    <string name="encumbrance_encumbered">Encumbered</string>
+    <string name="encumbrance_heavy">Heavily encumbered</string>
+    <string name="encumbrance_over">Over capacity!</string>
+
+    <!-- Character list -->
+    <string name="menu_receive">Receive inventory</string>
+    <string name="menu_theme">Theme</string>
+    <string name="theme_system">Follow system</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="fab_new_character">New character</string>
+    <string name="main_empty">No characters yet.\nTap “New character” to create your first adventurer.</string>
+    <string name="character_level">Level %1$d</string>
+    <string name="character_subtitle">Level %1$d %2$s</string>
+    <plurals name="character_stats">
+        <item quantity="one">%1$d item · %2$s</item>
+        <item quantity="other">%1$d items · %2$s</item>
+    </plurals>
+    <string name="character_delete_title">Delete character?</string>
+    <string name="character_delete_message">%1$s and the whole inventory will be deleted. This cannot be undone.</string>
+
+    <!-- Character dialog -->
+    <string name="character_new">New character</string>
+    <string name="character_edit">Edit character</string>
+    <string name="hint_name">Name</string>
+    <string name="hint_class">Class</string>
+    <string name="hint_race">Race</string>
+    <string name="hint_level">Level</string>
+    <string name="hint_strength">Strength</string>
+    <string name="label_purse">Purse</string>
+    <string name="hint_gold">gp</string>
+    <string name="hint_silver">sp</string>
+    <string name="hint_copper">cp</string>
+    <string name="error_name">Enter a name (up to 60 characters)</string>
+    <string name="error_level">1–20</string>
+    <string name="error_strength">1–30</string>
+    <string name="error_coins">Invalid</string>
+
+    <!-- Inventory -->
+    <string name="menu_share_wifi">Share over Wi-Fi</string>
+    <string name="menu_share_text">Share as text</string>
+    <string name="menu_edit_character">Edit character</string>
+    <string name="fab_add_item">Add item</string>
+    <string name="inventory_empty">The bag is empty.\nTap “Add item” to fill it.</string>
+    <string name="inventory_weight">%1$s / %2$s</string>
+    <string name="inventory_value">Value: %1$s</string>
+    <string name="inventory_purse">Purse: %1$s</string>
+    <string name="item_removed">%1$s removed</string>
+    <string name="share_subject">Inventory of %1$s</string>
+    <string name="add_item_title">Add item</string>
+    <string name="add_from_database">From the item database</string>
+    <string name="add_custom">Create a custom item</string>
+
+    <!-- Item dialog -->
+    <string name="item_new">New custom item</string>
+    <string name="item_edit">Edit item</string>
+    <string name="hint_item_name">Item name</string>
+    <string name="hint_category">Category</string>
+    <string name="hint_quantity">Quantity</string>
+    <string name="hint_weight">Weight (lb)</string>
+    <string name="hint_cost">Price (gp)</string>
+    <string name="hint_notes">Notes</string>
+    <string name="save_to_catalog">Also save to the item database</string>
+    <string name="error_item_name">Enter a name (up to 80 characters)</string>
+    <string name="error_quantity">1–9999</string>
+    <string name="error_weight">Invalid weight</string>
+    <string name="error_cost">Invalid price</string>
+
+    <!-- Item database -->
+    <string name="catalog_title">Item database</string>
+    <string name="catalog_search_hint">Search items</string>
+    <string name="catalog_empty">No items match your search.</string>
+    <string name="catalog_custom_badge">Custom</string>
+    <string name="catalog_no_price">no price</string>
+    <string name="catalog_added">%1$s added (now %2$d)</string>
+    <string name="catalog_deleted">%1$s deleted</string>
+    <string name="catalog_builtin_protected">Built-in items cannot be edited or deleted</string>
+    <string name="catalog_new_item">New database item</string>
+    <string name="catalog_edit_item">Edit database item</string>
+    <string name="menu_new_catalog_item">New item</string>
+
+    <!-- LAN sharing -->
+    <string name="share_title">Share over Wi-Fi</string>
+    <string name="share_host_title">Share %1$s</string>
+    <string name="share_host_hint">While sharing is on, other players on the same Wi-Fi can download this inventory.</string>
+    <string name="share_start">Start sharing</string>
+    <string name="share_stop">Stop sharing</string>
+    <string name="share_hosting_at">Sharing at:\n%1$s</string>
+    <string name="share_no_wifi">Sharing on port %1$d, but no Wi-Fi address was found. Connect to Wi-Fi or turn on a hotspot.</string>
+    <string name="share_receive_title">Receive an inventory</string>
+    <string name="share_receive_hint">Phones that are sharing on the same Wi-Fi appear below. You can also type the address shown on the other phone.</string>
+    <string name="share_nearby">Nearby players</string>
+    <string name="share_no_hosts">Searching… nobody is sharing yet.</string>
+    <string name="share_address_hint">Address, e.g. 192.168.1.23:47321</string>
+    <string name="share_fetch">Download</string>
+    <string name="share_received_title">Inventory received</string>
+    <plurals name="share_received_message">
+        <item quantity="one">%1$s: %2$d item (%3$s).\n\nImport it as a new character?</item>
+        <item quantity="other">%1$s: %2$d items (%3$s).\n\nImport it as a new character?</item>
+    </plurals>
+    <string name="share_import_new">Import as new</string>
+    <string name="share_merge_into">Add to %1$s</string>
+    <string name="share_imported">%1$s imported</string>
+    <string name="share_merged">Items added to %1$s</string>
+    <string name="share_error_address">Enter an address like 192.168.1.23:47321</string>
+    <string name="share_error_connection">Could not connect. Check that both phones are on the same Wi-Fi and that sharing is on.</string>
+    <string name="share_error_data">The other device did not send a valid inventory.</string>
+    <string name="share_error_host">Could not start sharing.</string>
+</resources>

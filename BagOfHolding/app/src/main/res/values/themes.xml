@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Material 3 DayNight theme. The same color names are defined in values/colors.xml (light)
+        and values-night/colors.xml (dark), so one theme serves both modes.
+    -->
+    <style name="Theme.BagOfHolding" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/boh_primary</item>
+        <item name="colorOnPrimary">@color/boh_on_primary</item>
+        <item name="colorPrimaryContainer">@color/boh_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/boh_on_primary_container</item>
+
+        <item name="colorSecondary">@color/boh_secondary</item>
+        <item name="colorOnSecondary">@color/boh_on_secondary</item>
+        <item name="colorSecondaryContainer">@color/boh_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/boh_on_secondary_container</item>
+
+        <item name="colorTertiary">@color/boh_tertiary</item>
+        <item name="colorOnTertiary">@color/boh_on_tertiary</item>
+        <item name="colorTertiaryContainer">@color/boh_tertiary_container</item>
+        <item name="colorOnTertiaryContainer">@color/boh_on_tertiary_container</item>
+
+        <item name="colorError">@color/boh_error</item>
+        <item name="colorOnError">@color/boh_on_error</item>
+
+        <item name="android:colorBackground">@color/boh_surface</item>
+        <item name="colorOnBackground">@color/boh_on_surface</item>
+        <item name="colorSurface">@color/boh_surface</item>
+        <item name="colorOnSurface">@color/boh_on_surface</item>
+        <item name="colorSurfaceVariant">@color/boh_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/boh_on_surface_variant</item>
+        <item name="colorOutline">@color/boh_outline</item>
+        <item name="colorOutlineVariant">@color/boh_outline_variant</item>
+
+        <item name="colorSurfaceContainerLowest">@color/boh_surface_container_lowest</item>
+        <item name="colorSurfaceContainerLow">@color/boh_surface_container_low</item>
+        <item name="colorSurfaceContainer">@color/boh_surface_container</item>
+        <item name="colorSurfaceContainerHigh">@color/boh_surface_container_high</item>
+        <item name="colorSurfaceContainerHighest">@color/boh_surface_container_highest</item>
+    </style>
+</resources>

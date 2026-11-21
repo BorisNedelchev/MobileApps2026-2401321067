@@ -1,0 +1,19 @@
+*.iml
+.gradle/
+/local.properties
+/.idea/
+.DS_Store
+/build/
+/app/build/
+/captures/
+.externalNativeBuild/
+.cxx/
+*.hprof
+
+# Signing secrets – never commit these
+keystore.properties
+*.jks
+*.keystore
+
+# The release APK in /apk is intentionally committed (course requirement)
+!/apk/app-release.apk

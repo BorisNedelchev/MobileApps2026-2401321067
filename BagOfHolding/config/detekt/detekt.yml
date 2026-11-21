@@ -1,0 +1,34 @@
+# Overrides on top of detekt's default configuration (buildUponDefaultConfig = true).
+build:
+  maxIssues: 0
+
+complexity:
+  LongMethod:
+    threshold: 80
+    excludes: ['**/CatalogSeed.kt']
+  LongParameterList:
+    functionThreshold: 8
+    constructorThreshold: 10
+  TooManyFunctions:
+    thresholdInFiles: 20
+    thresholdInClasses: 20
+    thresholdInInterfaces: 20
+    ignorePrivate: true
+    ignoreOverridden: true
+
+style:
+  MagicNumber:
+    excludes: ['**/test/**', '**/androidTest/**', '**/CatalogSeed.kt']
+    ignorePropertyDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+    ignoreNumbers: ['-1', '0', '1', '2', '10', '100']
+  MaxLineLength:
+    maxLineLength: 120
+  ReturnCount:
+    max: 4
+  UnusedPrivateMember:
+    active: true
+
+naming:
+  FunctionNaming:
+    excludes: ['**/test/**', '**/androidTest/**']

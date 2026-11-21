@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Български превод (използва се автоматично, когато езикът на телефона е български). -->
+<resources>
+    <string name="app_name">Bag of Holding</string>
+
+    <string name="action_save">Запази</string>
+    <string name="action_cancel">Отказ</string>
+    <string name="action_delete">Изтрий</string>
+    <string name="action_edit">Редактирай</string>
+    <string name="action_undo">Отмени</string>
+    <string name="action_open">Отвори</string>
+    <string name="cd_back">Назад</string>
+    <string name="cd_more">Още опции</string>
+    <string name="cd_add_one">Добави един %1$s</string>
+    <string name="cd_remove_one">Премахни един %1$s</string>
+
+    <string name="category_all">Всички</string>
+    <string name="category_weapon">Оръжие</string>
+    <string name="category_armor">Броня</string>
+    <string name="category_gear">Екипировка</string>
+    <string name="category_tool">Инструмент</string>
+    <string name="category_consumable">Консуматив</string>
+    <string name="category_magic">Магически</string>
+    <string name="category_treasure">Съкровище</string>
+    <string name="category_other">Друго</string>
+
+    <string name="encumbrance_none">Без товар</string>
+    <string name="encumbrance_encumbered">Натоварен</string>
+    <string name="encumbrance_heavy">Силно натоварен</string>
+    <string name="encumbrance_over">Над капацитета!</string>
+
+    <string name="menu_receive">Получи инвентар</string>
+    <string name="menu_theme">Тема</string>
+    <string name="theme_system">Според системата</string>
+    <string name="theme_light">Светла</string>
+    <string name="theme_dark">Тъмна</string>
+    <string name="fab_new_character">Нов герой</string>
+    <string name="main_empty">Все още няма герои.\nНатиснете „Нов герой“, за да създадете първия си приключенец.</string>
+    <string name="character_level">Ниво %1$d</string>
+    <string name="character_subtitle">Ниво %1$d %2$s</string>
+    <plurals name="character_stats">
+        <item quantity="one">%1$d предмет · %2$s</item>
+        <item quantity="other">%1$d предмета · %2$s</item>
+    </plurals>
+    <string name="character_delete_title">Изтриване на героя?</string>
+    <string name="character_delete_message">%1$s и целият инвентар ще бъдат изтрити. Действието е необратимо.</string>
+
+    <string name="character_new">Нов герой</string>
+    <string name="character_edit">Редактиране на герой</string>
+    <string name="hint_name">Име</string>
+    <string name="hint_class">Клас</string>
+    <string name="hint_race">Раса</string>
+    <string name="hint_level">Ниво</string>
+    <string name="hint_strength">Сила</string>
+    <string name="label_purse">Кесия</string>
+    <string name="hint_gold">gp</string>
+    <string name="hint_silver">sp</string>
+    <string name="hint_copper">cp</string>
+    <string name="error_name">Въведете име (до 60 знака)</string>
+    <string name="error_level">1–20</string>
+    <string name="error_strength">1–30</string>
+    <string name="error_coins">Невалидно</string>
+
+    <string name="menu_share_wifi">Сподели през Wi-Fi</string>
+    <string name="menu_share_text">Сподели като текст</string>
+    <string name="menu_edit_character">Редактирай героя</string>
+    <string name="fab_add_item">Добави предмет</string>
+    <string name="inventory_empty">Торбата е празна.\nНатиснете „Добави предмет“.</string>
+    <string name="inventory_weight">%1$s / %2$s</string>
+    <string name="inventory_value">Стойност: %1$s</string>
+    <string name="inventory_purse">Кесия: %1$s</string>
+    <string name="item_removed">%1$s е премахнат</string>
+    <string name="share_subject">Инвентар на %1$s</string>
+    <string name="add_item_title">Добавяне на предмет</string>
+    <string name="add_from_database">От базата с предмети</string>
+    <string name="add_custom">Създай собствен предмет</string>
+
+    <string name="item_new">Нов собствен предмет</string>
+    <string name="item_edit">Редактиране на предмет</string>
+    <string name="hint_item_name">Име на предмета</string>
+    <string name="hint_category">Категория</string>
+    <string name="hint_quantity">Количество</string>
+    <string name="hint_weight">Тегло (lb)</string>
+    <string name="hint_cost">Цена (gp)</string>
+    <string name="hint_notes">Бележки</string>
+    <string name="save_to_catalog">Запази и в базата с предмети</string>
+    <string name="error_item_name">Въведете име (до 80 знака)</string>
+    <string name="error_quantity">1–9999</string>
+    <string name="error_weight">Невалидно тегло</string>
+    <string name="error_cost">Невалидна цена</string>
+
+    <string name="catalog_title">База с предмети</string>
+    <string name="catalog_search_hint">Търсене</string>
+    <string name="catalog_empty">Няма намерени предмети.</string>
+    <string name="catalog_custom_badge">Собствен</string>
+    <string name="catalog_no_price">без цена</string>
+    <string name="catalog_added">%1$s е добавен (общо %2$d)</string>
+    <string name="catalog_deleted">%1$s е изтрит</string>
+    <string name="catalog_builtin_protected">Вградените предмети не могат да се редактират или трият</string>
+    <string name="catalog_new_item">Нов предмет в базата</string>
+    <string name="catalog_edit_item">Редактиране на предмет от базата</string>
+    <string name="menu_new_catalog_item">Нов предмет</string>
+
+    <string name="share_title">Споделяне през Wi-Fi</string>
+    <string name="share_host_title">Сподели %1$s</string>
+    <string name="share_host_hint">Докато споделянето е включено, други играчи в същата Wi-Fi мрежа могат да изтеглят този инвентар.</string>
+    <string name="share_start">Започни споделяне</string>
+    <string name="share_stop">Спри споделянето</string>
+    <string name="share_hosting_at">Споделя се на:\n%1$s</string>
+    <string name="share_no_wifi">Споделя се на порт %1$d, но не е намерен Wi-Fi адрес. Свържете се към Wi-Fi или включете хотспот.</string>
+    <string name="share_receive_title">Получаване на инвентар</string>
+    <string name="share_receive_hint">Телефоните, които споделят в същата Wi-Fi мрежа, се показват по-долу. Можете и да въведете адреса от другия телефон.</string>
+    <string name="share_nearby">Играчи наблизо</string>
+    <string name="share_no_hosts">Търсене… все още никой не споделя.</string>
+    <string name="share_address_hint">Адрес, напр. 192.168.1.23:47321</string>
+    <string name="share_fetch">Изтегли</string>
+    <string name="share_received_title">Получен инвентар</string>
+    <plurals name="share_received_message">
+        <item quantity="one">%1$s: %2$d предмет (%3$s).\n\nДа се импортира ли като нов герой?</item>
+        <item quantity="other">%1$s: %2$d предмета (%3$s).\n\nДа се импортира ли като нов герой?</item>
+    </plurals>
+    <string name="share_import_new">Като нов герой</string>
+    <string name="share_merge_into">Добави към %1$s</string>
+    <string name="share_imported">%1$s е импортиран</string>
+    <string name="share_merged">Предметите са добавени към %1$s</string>
+    <string name="share_error_address">Въведете адрес като 192.168.1.23:47321</string>
+    <string name="share_error_connection">Няма връзка. Проверете дали двата телефона са в една Wi-Fi мрежа и дали споделянето е включено.</string>
+    <string name="share_error_data">Другото устройство не изпрати валиден инвентар.</string>
+    <string name="share_error_host">Споделянето не може да започне.</string>
+</resources>
