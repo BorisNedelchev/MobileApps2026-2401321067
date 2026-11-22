@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    "Blocky" look: every component has square corners and a thick outline.
+    The theme (themes.xml) points Material's default component styles at these;
+    layouts that need a specific variant use them directly.
+    To soften the look later, change cornerSize / block_stroke in one place.
+-->
+<resources>
+
+    <!-- Square corners -->
+    <style name="ShapeAppearance.BagOfHolding.Square" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">0dp</item>
+    </style>
+
+    <!-- Cards -->
+    <style name="Widget.BagOfHolding.Card.Filled" parent="Widget.Material3.CardView.Filled">
+        <item name="shapeAppearance">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="strokeWidth">@dimen/block_stroke</item>
+        <item name="strokeColor">?attr/colorOutline</item>
+    </style>
+
+    <style name="Widget.BagOfHolding.Card.Outlined" parent="Widget.Material3.CardView.Outlined">
+        <item name="shapeAppearance">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="strokeWidth">@dimen/block_stroke</item>
+        <item name="strokeColor">?attr/colorOutline</item>
+    </style>
+
+    <!-- Buttons -->
+    <style name="Widget.BagOfHolding.Button" parent="Widget.Material3.Button">
+        <item name="shapeAppearance">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.BagOfHolding.Square</item>
+    </style>
+
+    <style name="Widget.BagOfHolding.Button.Tonal" parent="Widget.Material3.Button.TonalButton">
+        <item name="shapeAppearance">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="strokeWidth">@dimen/block_stroke</item>
+        <item name="strokeColor">?attr/colorOutline</item>
+    </style>
+
+    <style name="Widget.BagOfHolding.Button.Outlined" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="shapeAppearance">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="strokeWidth">@dimen/block_stroke</item>
+    </style>
+
+    <!-- Borderless icon button (the faint + / − and the compartment chevron); square ripple -->
+    <style name="Widget.BagOfHolding.Button.IconButton" parent="Widget.Material3.Button.IconButton">
+        <item name="shapeAppearance">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.BagOfHolding.Square</item>
+    </style>
+
+    <style name="Widget.BagOfHolding.Button.IconButton.Tonal" parent="Widget.Material3.Button.IconButton.Filled.Tonal">
+        <item name="shapeAppearance">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="strokeWidth">@dimen/block_stroke</item>
+        <item name="strokeColor">?attr/colorOutline</item>
+    </style>
+
+    <!-- Floating action buttons -->
+    <style name="Widget.BagOfHolding.ExtendedFab" parent="Widget.Material3.ExtendedFloatingActionButton.Icon.Primary">
+        <item name="shapeAppearance">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="strokeWidth">@dimen/block_stroke</item>
+        <item name="strokeColor">?attr/colorOnPrimaryContainer</item>
+    </style>
+
+    <style name="Widget.BagOfHolding.Fab" parent="Widget.Material3.FloatingActionButton.Primary">
+        <item name="shapeAppearance">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.BagOfHolding.Square</item>
+    </style>
+
+    <!-- Text fields -->
+    <style name="Widget.BagOfHolding.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="shapeAppearance">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="boxStrokeWidth">@dimen/block_stroke</item>
+        <item name="boxStrokeWidthFocused">@dimen/block_stroke_focused</item>
+    </style>
+
+    <style name="Widget.BagOfHolding.TextInputLayout.Dense" parent="Widget.Material3.TextInputLayout.OutlinedBox.Dense">
+        <item name="shapeAppearance">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="boxStrokeWidth">@dimen/block_stroke</item>
+        <item name="boxStrokeWidthFocused">@dimen/block_stroke_focused</item>
+    </style>
+
+    <style name="Widget.BagOfHolding.TextInputLayout.Dropdown" parent="Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="shapeAppearance">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="boxStrokeWidth">@dimen/block_stroke</item>
+        <item name="boxStrokeWidthFocused">@dimen/block_stroke_focused</item>
+    </style>
+
+    <!-- Category filter chips in the item database -->
+    <style name="Widget.BagOfHolding.Chip.Filter" parent="Widget.Material3.Chip.Filter">
+        <item name="shapeAppearance">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="chipCornerRadius">0dp</item>
+        <item name="chipStrokeWidth">@dimen/block_stroke</item>
+        <item name="chipStrokeColor">?attr/colorOutline</item>
+    </style>
+
+    <!-- Snackbar ("Rope removed · UNDO") -->
+    <style name="Widget.BagOfHolding.Snackbar" parent="Widget.Material3.Snackbar">
+        <item name="shapeAppearance">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.BagOfHolding.Square</item>
+    </style>
+
+    <!-- Dialogs (MaterialAlertDialogBuilder) -->
+    <style name="ThemeOverlay.BagOfHolding.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="alertDialogStyle">@style/MaterialAlertDialog.BagOfHolding</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.BagOfHolding.Square</item>
+    </style>
+
+    <style name="MaterialAlertDialog.BagOfHolding" parent="MaterialAlertDialog.Material3">
+        <item name="shapeAppearance">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.BagOfHolding.Square</item>
+    </style>
+
+    <!-- Chunkier titles -->
+    <style name="TextAppearance.BagOfHolding.HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.BagOfHolding.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.BagOfHolding.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.BagOfHolding.TitleSmall" parent="TextAppearance.Material3.TitleSmall">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.BagOfHolding.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
+        <item name="android:textStyle">bold</item>
+    </style>
+</resources>

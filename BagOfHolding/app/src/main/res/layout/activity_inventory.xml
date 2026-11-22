@@ -65,8 +65,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="8dp"
                     android:max="100"
-                    app:trackCornerRadius="4dp"
-                    app:trackThickness="8dp" />
+                    app:trackCornerRadius="0dp"
+                    app:trackThickness="12dp" />
 
                 <!-- Purse: tap a coin to add / remove / set -->
                 <LinearLayout

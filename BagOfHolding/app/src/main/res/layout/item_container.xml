@@ -52,7 +52,7 @@
         <!-- Hides / shows the items inside the compartment -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonCollapse"
-            style="@style/Widget.Material3.Button.IconButton"
+            style="@style/Widget.BagOfHolding.Button.IconButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:icon="@drawable/ic_expand_less"

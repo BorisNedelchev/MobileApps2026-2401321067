@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+<!-- Square "block" behind the character's initial -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
     <solid android:color="?attr/colorPrimaryContainer" />
+    <stroke
+        android:width="@dimen/block_stroke"
+        android:color="?attr/colorOnPrimaryContainer" />
 </shape>

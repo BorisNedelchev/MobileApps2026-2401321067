@@ -2,4 +2,7 @@
 <resources>
     <!-- How far items inside a storage compartment are indented -->
     <dimen name="content_indent">24dp</dimen>
+    <!-- Outline thickness of cards, buttons, fields and tiles (the "blocky" look) -->
+    <dimen name="block_stroke">1dp</dimen>
+    <dimen name="block_stroke_focused">3dp</dimen>
 </resources>

@@ -37,5 +37,34 @@
         <item name="colorSurfaceContainer">@color/boh_surface_container</item>
         <item name="colorSurfaceContainerHigh">@color/boh_surface_container_high</item>
         <item name="colorSurfaceContainerHighest">@color/boh_surface_container_highest</item>
+
+        <!-- Blocky look: square corners everywhere (styles.xml) -->
+        <item name="shapeAppearanceCornerExtraSmall">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="shapeAppearanceCornerSmall">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="shapeAppearanceCornerMedium">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="shapeAppearanceCornerLarge">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="shapeAppearanceCornerExtraLarge">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.BagOfHolding.Square</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.BagOfHolding.Square</item>
+
+        <!-- Default component styles: square + thick outlines -->
+        <item name="materialCardViewStyle">@style/Widget.BagOfHolding.Card.Outlined</item>
+        <item name="materialCardViewFilledStyle">@style/Widget.BagOfHolding.Card.Filled</item>
+        <item name="materialCardViewOutlinedStyle">@style/Widget.BagOfHolding.Card.Outlined</item>
+        <item name="materialButtonStyle">@style/Widget.BagOfHolding.Button</item>
+        <item name="materialButtonOutlinedStyle">@style/Widget.BagOfHolding.Button.Outlined</item>
+        <item name="extendedFloatingActionButtonStyle">@style/Widget.BagOfHolding.ExtendedFab</item>
+        <item name="floatingActionButtonStyle">@style/Widget.BagOfHolding.Fab</item>
+        <item name="textInputStyle">@style/Widget.BagOfHolding.TextInputLayout</item>
+        <item name="snackbarStyle">@style/Widget.BagOfHolding.Snackbar</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.BagOfHolding.Dialog</item>
+
+        <!-- Bold titles -->
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.BagOfHolding.HeadlineSmall</item>
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.BagOfHolding.TitleLarge</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.BagOfHolding.TitleMedium</item>
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.BagOfHolding.TitleSmall</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.BagOfHolding.LabelLarge</item>
     </style>
 </resources>

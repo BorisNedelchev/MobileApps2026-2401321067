@@ -10,7 +10,7 @@ items), and passes inventories to other players' phones over the local Wi-Fi net
 | Min SDK / Target SDK | 24 (Android 7.0) / 36 |
 | Architecture | MVVM + Repository + manual dependency injection |
 | Local database | SQLite (`SQLiteOpenHelper`, no ORM) |
-| UI | Material 3, light and dark theme, English and Bulgarian |
+| UI | Material 3 with a square, "blocky" style (no rounded corners, 2dp outlines, bold titles), light and dark theme, English and Bulgarian |
 | Extra features | LAN sharing over HTTP + Network Service Discovery, Share Intent |
 
 ---
@@ -99,6 +99,11 @@ registration removed in `ViewModel.onCleared()`, so nothing keeps running in the
 Android share sheet (Share Intent) to messengers, notes, e-mail, etc.
 
 **Theme.** Start screen menu → **Theme** → follow system / light / dark (saved in SharedPreferences).
+
+**Look.** Every component is square with a 2dp outline and titles are bold. It is done in the theme:
+`values/styles.xml` defines square versions of Material's cards, buttons, text fields, chips, FABs,
+snackbars and dialogs, and `values/themes.xml` makes them the defaults. Corner size and outline
+thickness (`@dimen/block_stroke`) are each set in one place.
 
 ## 3. Architecture
 
