@@ -336,8 +336,8 @@ None. The app has no login and no server; all data is stored locally on the phon
 
 ## 9. Screenshots
 
-| Characters | Inventory | Item database | Wi-Fi sharing | Dark theme |
-|---|---|---|---|---|
+| Characters | Inventory | Wi-Fi sharing |
+|---|---|---|
 | ![Characters](BagOfHolding/docs/screenshots/characters.png) | ![Inventory](BagOfHolding/docs/screenshots/inventory.png) | ![Sharing](BagOfHolding/docs/screenshots/share.png) |
 
 ---
