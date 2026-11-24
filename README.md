@@ -11,7 +11,7 @@ database in one tap, and passes inventories to other players' phones over the lo
 | Course | Mobile Applications |
 | Version | 1.0 (database schema 3) |
 | Platform | Android 7.0 (API 24) and newer |
-| APK | [`apk/app-release.apk`](apk/app-release.apk) |
+| APK | [`apk/BagOfHoldingRelease.apk`](apk/BagOfHoldingRelease.apk) |
 
 ---
 
@@ -344,7 +344,7 @@ None. The app has no login and no server; all data is stored locally on the phon
 
 ## 10. APK
 
-[`apk/app-release.apk`](apk/app-release.apk): version 1.0, release build, about 5.3 MB.
+[`apk/BagOfHoldingRelease.apk`](apk/BagOfHoldingRelease.apk): version 1.0, release build, about 5.3 MB.
 
 To install: copy the file to an Android 7.0+ phone, open it and allow **Install unknown apps** for
 the app you opened it with. If an older build signed with a different key is installed, uninstall
@@ -364,7 +364,7 @@ it first.
 | Extra feature | Network communication over the LAN (HTTP server + client + service discovery) and Share Intent |
 | MVVM + Repository + DI | ViewModels, 3 repositories, `AppContainer` |
 | Tests | 84 unit tests (rules, repositories, ViewModels, networking), 1 Espresso test of the main scenario |
-| README, APK | This file, [`apk/app-release.apk`](apk/app-release.apk) |
+| README, APK | This file, [`apk/BagOfHoldingRelease.apk`](apk/BagOfHoldingRelease.apk) |
 
 ---
 
